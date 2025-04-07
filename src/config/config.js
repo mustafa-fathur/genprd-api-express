@@ -1,26 +1,29 @@
 require('dotenv').config();
 
-module.exports =
-{
+module.exports = {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "database_development",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": process.env.DB_DEV_USERNAME,
+    "password": process.env.DB_DEV_PASSWORD,
+    "database": process.env.DB_DEV_NAME,
+    "host": process.env.DB_DEV_HOST,
+    "dialect": process.env.DB_DEV_CONNECTION
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": process.env.DB_TEST_USERNAME,
+    "password": process.env.DB_TEST_PASSWORD,
+    "database": process.env.DB_TEST_NAME,
+    "host": process.env.DB_TEST_HOST,
+    "dialect": process.env.DB_TEST_CONNECTION,
+    "port": process.env.DB_TEST_PORT,
+    "dialectOptions": {
+      "host": process.env.DB_TEST_HOST,
+    }
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": process.env.DB_PROD_USERNAME,
+    "password": process.env.DB_PROD_PASSWORD,
+    "database": process.env.DB_PROD_NAME,
+    "host": process.env.DB_PROD_HOST,
+    "dialect": process.env.DB_PROD_CONNECTION
   }
 }
