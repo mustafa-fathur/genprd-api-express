@@ -31,14 +31,15 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          IMAGE_NAME="gcr.io/${{ secrets.GCP_PROJECT_ID }}/express-backend"
+          # Replace this with your Artifact Registry URL
+          IMAGE_NAME="us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/genprd-images/express-backend"
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy express-backend \
-            --image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/express-backend \
+            --image=$IMAGE_NAME \
             --region=${{ secrets.GCP_REGION }} \
             --platform=managed \
             --allow-unauthenticated \
@@ -49,6 +50,6 @@ jobs:
             DB_HOST=${{ secrets.DB_HOST }},\
             NODE_ENV=production,\
             JWT_SECRET=${{ secrets.JWT_SECRET }},\
-            REFRESH_SECRET=${{ secrets.REFRESH_SECRET }},\
+            JWT_REFRESH_SECRET=${{ secrets.REFRESH_SECRET }},\
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},\
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
