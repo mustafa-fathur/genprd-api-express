@@ -4,3 +4,6 @@
 
 # VS Code settings
 /.vscode
+
+# Service account key
+/genprd-github-action-service-key.json      
