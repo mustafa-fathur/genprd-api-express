@@ -1,10 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+const routes = require('./src/routes');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/api', routes);
+
 
 app.get('/', (req, res) => {
-  res.send('Welcome to GenPRD Express API!');
+  res.send('Welcome to GenPRD API!');
 });
 
 app.listen(port, () => {
