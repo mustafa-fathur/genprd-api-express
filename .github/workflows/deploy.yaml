@@ -32,7 +32,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           # Replace this with your Artifact Registry URL
-          IMAGE_NAME="us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/genprd-images/express-backend"
+          IMAGE_NAME="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/genprd-images/express-backend"
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
