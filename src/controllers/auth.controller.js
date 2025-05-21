@@ -10,46 +10,56 @@ const googleLogin = async (req, res) => {
 };
 
 const googleCallback = async (req, res) => {
-    try {
-        const { code } = req.query;
-        console.log("Received code from Google:", code ? `${code.substring(0, 10)}...` : undefined);
-        
-        if (!code) {
-            return res.status(400).json({ message: 'No authorization code received' });
-        }
-  
-        const googleUser = await getGoogleUser(code);
-  
-        let user = await User.findOne({ where: { google_id: googleUser.google_id } });
-        if (!user) {
-          user = await User.create(googleUser);
-        }
-  
-        const accessToken = generateToken({ id: user.id, email: user.email });
-        const refreshToken = generateRefreshToken({ id: user.id });
-  
-        // Store refresh token in database
-        await RefreshToken.create({ 
-            token: refreshToken, 
-            user_id: user.id,
-            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            revoked: false
-        });
-  
-        res.json({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          user: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            avatar_url: user.avatar_url,
-          }
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Authentication failed' });
+  try {
+    const { code } = req.query;
+    console.log("Google callback called. URL:", req.originalUrl);
+    console.log("Received code from Google:", code ? `${code.substring(0, 10)}...` : undefined);
+    
+    if (!code) {
+      console.log("No authorization code received");
+      return res.status(400).json({ message: 'No authorization code received' });
     }
+
+    try {
+      console.log("Attempting to get Google user data...");
+      const googleUser = await getGoogleUser(code);
+      console.log("Google user data retrieved:", googleUser.email);
+      
+      let user = await User.findOne({ where: { google_id: googleUser.google_id } });
+      if (!user) {
+        user = await User.create(googleUser);
+      }
+  
+      const accessToken = generateToken({ id: user.id, email: user.email });
+      const refreshToken = generateRefreshToken({ id: user.id });
+  
+      // Store refresh token in database
+      await RefreshToken.create({ 
+          token: refreshToken, 
+          user_id: user.id,
+          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          revoked: false
+      });
+  
+      res.json({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          avatar_url: user.avatar_url,
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching Google user:", error);
+      return res.status(401).json({ message: 'Authentication failed', error: error.message });
+    }
+    
+  } catch (err) {
+    console.error("Unhandled error in Google callback:", err);
+    return res.status(500).json({ message: 'Authentication failed', error: err.message });
+  }
 };
 
 const refreshToken = async (req, res) => {
