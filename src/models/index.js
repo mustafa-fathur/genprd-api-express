@@ -13,11 +13,12 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
+  // Use config object instead of direct environment variables
+  sequelize = new Sequelize(config.database, config.username, config.password, {
+    host: config.host,
+    dialect: config.dialect || 'mysql',
     dialectModule: require('mysql2'),
-    port: 3306,
+    port: config.port || 3306,
     logging: false,
   });
 }

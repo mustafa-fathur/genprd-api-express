@@ -1,5 +1,6 @@
 const { OAuth2Client } = require('google-auth-library');
 
+// Create OAuth client
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
@@ -16,21 +17,36 @@ const getGoogleAuthURL = () => {
 
 const getGoogleUser = async (code) => {
   try {
-    const { tokens } = await client.getToken(code);
-    const ticket = await client.verifyIdToken({
-      idToken: tokens.id_token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+    console.log('Getting tokens from Google...');
+    
+    // Exchange authorization code for tokens
+    const { tokens } = await client.getToken({
+      code: code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
     });
     
-    const payload = ticket.getPayload();
+    console.log('Tokens received, getting user info...');
+    
+    // Set credentials for this client
+    client.setCredentials(tokens);
+    
+    // Get user info
+    const { data } = await client.request({
+      url: 'https://www.googleapis.com/oauth2/v1/userinfo',
+    });
+    
+    console.log('User info received');
+    
     return {
-      google_id: payload.sub,
-      email: payload.email,
-      name: payload.name,
-      avatar_url: payload.picture
+      google_id: data.id,
+      name: data.name,
+      email: data.email,
+      avatar_url: data.picture,
     };
   } catch (error) {
-    console.error("Error getting Google user:", error);
+    console.error('Error in getGoogleUser:', error.message);
     throw error;
   }
 };
