@@ -11,7 +11,7 @@ app.use('/api', routes);
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send('Welcome to GenPRD API!');
+  res.send('Welcome to GenPRD Express API!');
 });
 
 app.listen(port, () => {
