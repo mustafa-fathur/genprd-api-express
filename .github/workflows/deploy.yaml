@@ -19,7 +19,7 @@ jobs:
       - name: Google Auth
         uses: "google-github-actions/auth@v1"
         with:
-          credentials_json: "${{ secrets.GCP_SA_KEY }}"
+          credentials_json: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}"
 
       - name: Set up Cloud SDK
         uses: "google-github-actions/setup-gcloud@v1"
@@ -28,7 +28,6 @@ jobs:
 
       - name: Authenticate Docker with Artifact Registry
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" | gcloud auth activate-service-account --key-file=-
           gcloud auth configure-docker asia-southeast2-docker.pkg.dev
 
       - name: Build and Push Docker Image
