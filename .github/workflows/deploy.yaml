@@ -37,6 +37,8 @@ jobs:
           docker push $IMAGE_NAME
 
       - name: Deploy to Cloud Run
+        env:
+          IMAGE_NAME: "asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/genprd-images/express-backend"
         run: |
           gcloud run deploy express-backend \
             --image=$IMAGE_NAME \
