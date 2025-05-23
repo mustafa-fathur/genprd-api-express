@@ -47,7 +47,7 @@ jobs:
             --memory=2Gi \
             --cpu=1 \
             --max-instances=10 \
-            --set-env-vars="NODE_ENV=${{ secrets.NODE_ENV }}" \
+            --set-env-vars="NODE_ENV=production" \
             --set-env-vars="DB_USERNAME=${{ secrets.DB_USERNAME }}" \
             --set-env-vars="DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
             --set-env-vars="DB_NAME=${{ secrets.DB_NAME }}" \
@@ -61,7 +61,6 @@ jobs:
             --set-env-vars="GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
             --set-env-vars="GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" \
             --set-env-vars="GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
-            --set-env-vars="GCP_STORAGE_KEYFILE=${{ secrets.GCP_STORAGE_KEYFILE }}" \
             --set-env-vars="GCP_BUCKET_NAME=${{ secrets.GCP_BUCKET_NAME }}" \
             --set-env-vars="GCP_FOLDER_NAME=${{ secrets.GCP_FOLDER_NAME }}" \
             --set-env-vars="FLASK_URL=${{ secrets.FLASK_URL }}"

@@ -8,17 +8,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #475569;
             --text: #0f172a;
-            --text-secondary: #64748b;
-            --border: #e2e8f0;
+            --text-light: #374151;
+            --text-muted: #6b7280;
+            --border: #d1d5db;
+            --border-light: #e5e7eb;
             --background: #ffffff;
-            --light-bg: #f8fafc;
+            --background-light: #f9fafb;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --timeline-line: #cbd5e1;
         }
 
         * {
@@ -30,22 +33,23 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text);
-            line-height: 1.6;
-            font-size: 14px;
+            line-height: 1.5;
+            font-size: 12px;
+            background: white;
         }
 
         .document {
-            max-width: 210mm;
-            margin: 0 auto;
-            padding: 20mm;
+            max-width: 100%;
+            margin: 0;
+            padding: 15mm;
             background: white;
         }
 
         /* Header */
         .header {
             text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
             border-bottom: 3px solid var(--primary);
         }
 
@@ -54,66 +58,72 @@
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 8px;
+            line-height: 1.2;
         }
 
         .header .subtitle {
-            font-size: 18px;
+            font-size: 16px;
             color: var(--secondary);
             font-weight: 500;
+            margin-bottom: 10px;
         }
 
-        .header .version {
-            margin-top: 15px;
+        .header .meta {
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
-        /* Identity Section */
-        .identity-section {
-            background: var(--light-bg);
-            padding: 25px;
+        /* Document Info Grid - Two Columns */
+        .doc-info {
+            background: var(--background-light);
+            padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
+            border: 1px solid var(--border-light);
         }
 
-        .identity-grid {
+        .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .identity-item {
+            gap: 15px;
             margin-bottom: 15px;
         }
 
-        .identity-label {
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
+        .info-item {
+            min-height: 40px;
         }
 
-        .identity-value {
+        .info-label {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
             font-weight: 500;
             color: var(--text);
+            font-size: 12px;
+            line-height: 1.4;
         }
 
         .project-overview {
             grid-column: span 2;
             margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
         }
 
         /* Section Styling */
         .section {
-            margin-bottom: 35px;
+            margin-bottom: 30px;
             page-break-inside: avoid;
         }
 
         .section-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 15px;
@@ -122,15 +132,17 @@
         }
 
         .subsection-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
-            color: var(--primary-dark);
-            margin: 20px 0 10px 0;
+            color: var(--primary-light);
+            margin: 18px 0 10px 0;
         }
 
         .content {
             margin-bottom: 15px;
             text-align: justify;
+            line-height: 1.6;
+            font-size: 12px;
         }
 
         /* Tables */
@@ -138,7 +150,8 @@
             width: 100%;
             border-collapse: collapse;
             margin: 15px 0;
-            font-size: 12px;
+            font-size: 11px;
+            page-break-inside: avoid;
         }
 
         .table th {
@@ -147,7 +160,7 @@
             padding: 12px 8px;
             text-align: left;
             font-weight: 600;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -156,51 +169,90 @@
             padding: 10px 8px;
             border-bottom: 1px solid var(--border);
             vertical-align: top;
+            line-height: 1.5;
         }
 
         .table tr:nth-child(even) {
-            background-color: #f9fafb;
+            background-color: var(--background-light);
         }
 
-        /* Timeline */
+        .table .role-name {
+            font-weight: 600;
+            text-transform: capitalize;
+            color: var(--primary);
+            min-width: 90px;
+        }
+
+        /* Timeline Roadmap Style */
         .timeline {
             margin: 20px 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--timeline-line);
         }
 
         .timeline-item {
-            display: flex;
+            position: relative;
             margin-bottom: 20px;
-            padding: 15px;
-            background: var(--light-bg);
-            border-radius: 6px;
-            border-left: 4px solid var(--primary);
+            padding-left: 50px;
+            page-break-inside: avoid;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 8px;
+            width: 14px;
+            height: 14px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--primary);
         }
 
         .timeline-content {
-            flex: 1;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .timeline-period {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary);
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .timeline-activity {
-            font-weight: 500;
-            margin-bottom: 3px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: var(--text);
         }
 
         .timeline-pic {
-            font-size: 12px;
-            color: var(--text-secondary);
+            font-size: 11px;
+            color: var(--text-muted);
+            font-style: italic;
         }
 
-        /* Metrics */
+        /* Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
@@ -208,21 +260,25 @@
         .metric-card {
             background: white;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 15px;
+            page-break-inside: avoid;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .metric-name {
             font-weight: 600;
             color: var(--primary);
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 8px;
+            line-height: 1.3;
         }
 
         .metric-definition {
-            font-size: 11px;
+            font-size: 10px;
             margin-bottom: 10px;
-            color: var(--text-secondary);
+            color: var(--text-light);
+            line-height: 1.4;
         }
 
         .metric-values {
@@ -234,17 +290,21 @@
 
         .metric-value-item {
             text-align: center;
+            flex: 1;
         }
 
         .metric-value-label {
-            font-size: 10px;
-            color: var(--text-secondary);
+            font-size: 9px;
+            color: var(--text-muted);
             margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .metric-value {
             font-weight: 600;
             font-size: 12px;
+            color: var(--text);
         }
 
         .target-value {
@@ -252,76 +312,101 @@
         }
 
         /* User Stories */
+        .stories-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
         .story-card {
             background: white;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 15px;
-            margin-bottom: 15px;
+            page-break-inside: avoid;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .story-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 10px;
+            gap: 10px;
         }
 
         .story-title {
             font-weight: 600;
             font-size: 13px;
+            flex: 1;
+            line-height: 1.3;
+            color: var(--text);
         }
 
         .priority-badge {
-            font-size: 10px;
-            font-weight: 500;
-            padding: 3px 8px;
+            font-size: 9px;
+            font-weight: 600;
+            padding: 4px 8px;
             border-radius: 12px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .priority-high {
-            background-color: rgba(239, 68, 68, 0.1);
+            background-color: rgba(220, 38, 38, 0.1);
             color: var(--danger);
+            border: 1px solid rgba(220, 38, 38, 0.2);
         }
 
         .priority-medium {
-            background-color: rgba(245, 158, 11, 0.1);
+            background-color: rgba(217, 119, 6, 0.1);
             color: var(--warning);
+            border: 1px solid rgba(217, 119, 6, 0.2);
         }
 
         .priority-low {
-            background-color: rgba(16, 185, 129, 0.1);
+            background-color: rgba(5, 150, 105, 0.1);
             color: var(--success);
+            border: 1px solid rgba(5, 150, 105, 0.2);
         }
 
         .story-text {
             font-style: italic;
             margin-bottom: 10px;
-            font-size: 12px;
+            font-size: 11px;
+            line-height: 1.5;
+            color: var(--text-light);
         }
 
         .acceptance-criteria {
-            background-color: var(--light-bg);
+            background-color: var(--background-light);
             padding: 10px;
-            border-radius: 4px;
-            font-size: 11px;
+            border-radius: 6px;
+            font-size: 10px;
+            border-left: 3px solid var(--primary);
         }
 
         .acceptance-criteria-label {
             font-weight: 600;
             margin-bottom: 5px;
-            color: var(--text-secondary);
+            color: var(--text-light);
+        }
+
+        .acceptance-criteria-text {
+            line-height: 1.5;
+            color: var(--text);
         }
 
         /* Footer */
         .footer {
-            margin-top: 50px;
+            margin-top: 40px;
             padding-top: 20px;
             border-top: 1px solid var(--border);
             text-align: center;
             font-size: 10px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
         /* Page breaks */
@@ -329,14 +414,47 @@
             page-break-before: always;
         }
 
+        .no-break {
+            page-break-inside: avoid;
+        }
+
+        /* Overview sections */
+        .overview-section {
+            margin-bottom: 18px;
+            page-break-inside: avoid;
+        }
+
+        .overview-section .subsection-title {
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+
+        /* Responsive adjustments */
         @media print {
             .document {
                 margin: 0;
-                padding: 15mm;
+                padding: 12mm;
             }
             
             .section {
-                page-break-inside: avoid;
+                margin-bottom: 25px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .timeline::before {
+                print-color-adjust: exact;
+            }
+
+            .timeline-item::before {
+                print-color-adjust: exact;
             }
         }
     </style>
@@ -347,73 +465,64 @@
         <div class="header">
             <h1>{{product_name}}</h1>
             <div class="subtitle">Product Requirements Document</div>
-            <div class="version">Version {{document_version}} | {{formatDate created_at}}</div>
+            <div class="meta">Version {{document_version}} • Created {{formatDate 'now'}}</div>
         </div>
 
-        <!-- PRD Identity Section -->
-        <div class="section">
-            <h2 class="section-title">Document Information</h2>
-            <div class="identity-section">
-                <div class="identity-grid">
-                    <div class="identity-item">
-                        <div class="identity-label">Document Version</div>
-                        <div class="identity-value">{{document_version}}</div>
-                    </div>
-                    <div class="identity-item">
-                        <div class="identity-label">Document Stage</div>
-                        <div class="identity-value">{{document_stage}}</div>
-                    </div>
-                    <div class="identity-item">
-                        <div class="identity-label">Document Owners</div>
-                        <div class="identity-value">{{joinArray document_owners}}</div>
-                    </div>
-                    <div class="identity-item">
-                        <div class="identity-label">Developers</div>
-                        <div class="identity-value">{{joinArray developers}}</div>
-                    </div>
-                    <div class="identity-item">
-                        <div class="identity-label">Stakeholders</div>
-                        <div class="identity-value">{{joinArray stakeholders}}</div>
-                    </div>
-                    <div class="identity-item">
-                        <div class="identity-label">Timeline</div>
-                        <div class="identity-value">{{formatDate start_date}} - {{formatDate end_date}}</div>
-                    </div>
-                    <div class="identity-item project-overview">
-                        <div class="identity-label">Project Overview</div>
-                        <div class="identity-value">{{project_overview}}</div>
-                    </div>
+        <!-- Document Information - Two Columns -->
+        <div class="doc-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Timeline</div>
+                    <div class="info-value">{{formatDate start_date}} - {{formatDate end_date}}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Document Owners</div>
+                    <div class="info-value">{{joinArray document_owners}}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Development Team</div>
+                    <div class="info-value">{{joinArray developers}}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Stakeholders</div>
+                    <div class="info-value">{{joinArray stakeholders}}</div>
+                </div>
+                <div class="info-item project-overview">
+                    <div class="info-label">Project Overview</div>
+                    <div class="info-value">{{project_overview}}</div>
                 </div>
             </div>
         </div>
 
         {{#if generated_sections.overview}}
-        <!-- Problem Statements & Objectives -->
+        <!-- Project Overview -->
         <div class="section">
             <h2 class="section-title">Project Overview</h2>
             {{#each generated_sections.overview.sections}}
-            <div class="subsection-title">{{this.title}}</div>
-            <div class="content">{{this.content}}</div>
+            <div class="overview-section">
+                <div class="subsection-title">{{this.title}}</div>
+                <div class="content">{{this.content}}</div>
+            </div>
             {{/each}}
         </div>
         {{/if}}
 
         {{#if generated_sections.darci}}
-        <!-- DARCI Roles -->
-        <div class="section">
-            <h2 class="section-title">DARCI Roles & Responsibilities</h2>
+        <!-- DARCI Matrix -->
+        <div class="section no-break">
+            <h2 class="section-title">DARCI Responsibility Matrix</h2>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Role</th>
-                        <th>Personnel</th>
-                        <th>Guidelines</th>
+                        <th style="width: 100px;">Role</th>
+                        <th style="width: 150px;">Personnel</th>
+                        <th>Responsibilities & Guidelines</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each generated_sections.darci.roles}}
                     <tr>
-                        <td style="font-weight: 600; text-transform: capitalize;">{{this.name}}</td>
+                        <td class="role-name">{{this.name}}</td>
                         <td>{{joinArray this.members}}</td>
                         <td>{{this.guidelines}}</td>
                     </tr>
@@ -424,9 +533,9 @@
         {{/if}}
 
         {{#if generated_sections.project_timeline}}
-        <!-- Timeline -->
-        <div class="section page-break">
-            <h2 class="section-title">Project Timeline</h2>
+        <!-- Project Timeline -->
+        <div class="section">
+            <h2 class="section-title">Project Timeline & Roadmap</h2>
             <div class="timeline">
                 {{#each generated_sections.project_timeline.phases}}
                 <div class="timeline-item">
@@ -444,7 +553,7 @@
         {{#if generated_sections.success_metrics}}
         <!-- Success Metrics -->
         <div class="section">
-            <h2 class="section-title">Success Metrics</h2>
+            <h2 class="section-title">Success Metrics & KPIs</h2>
             <div class="metrics-grid">
                 {{#each generated_sections.success_metrics.metrics}}
                 <div class="metric-card">
@@ -469,27 +578,28 @@
         {{#if generated_sections.user_stories}}
         <!-- User Stories -->
         <div class="section page-break">
-            <h2 class="section-title">User Stories</h2>
-            {{#each generated_sections.user_stories.stories}}
-            <div class="story-card">
-                <div class="story-header">
-                    <div class="story-title">{{this.title}}</div>
-                    <span class="priority-badge priority-{{this.priority}}">{{this.priority}} Priority</span>
+            <h2 class="section-title">User Stories & Requirements</h2>
+            <div class="stories-container">
+                {{#each generated_sections.user_stories.stories}}
+                <div class="story-card">
+                    <div class="story-header">
+                        <div class="story-title">{{this.title}}</div>
+                        <span class="priority-badge priority-{{this.priority}}">{{this.priority}}</span>
+                    </div>
+                    <div class="story-text">{{this.user_story}}</div>
+                    <div class="acceptance-criteria">
+                        <div class="acceptance-criteria-label">Acceptance Criteria:</div>
+                        <div class="acceptance-criteria-text">{{this.acceptance_criteria}}</div>
+                    </div>
                 </div>
-                <div class="story-text">{{this.user_story}}</div>
-                <div class="acceptance-criteria">
-                    <div class="acceptance-criteria-label">Acceptance Criteria:</div>
-                    <div>{{this.acceptance_criteria}}</div>
-                </div>
+                {{/each}}
             </div>
-            {{/each}}
         </div>
         {{/if}}
 
         <!-- Footer -->
         <div class="footer">
-            <p>Generated on {{formatDate 'now'}} | PRD Maker Application</p>
-            <p>Document ID: {{id}} | User: {{user_id}}</p>
+            <p>Generated by GenPRD</p>
         </div>
     </div>
 </body>

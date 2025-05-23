@@ -5,11 +5,33 @@ const Handlebars = require('handlebars');
 const { Storage } = require('@google-cloud/storage');
 require('dotenv').config();
 
-// Initialize Google Cloud Storage
-const storage = new Storage({
-  projectId: process.env.GCP_PROJECT_ID,
-  keyFilename: process.env.GCP_STORAGE_KEYFILE,
-});
+// Initialize Google Cloud Storage with environment-aware configuration
+let storage;
+
+if (process.env.NODE_ENV === 'production') {
+  // In production (Cloud Run), use default credentials
+  console.log('Using default Google Cloud credentials for production');
+  storage = new Storage({
+    projectId: process.env.GCP_PROJECT_ID,
+  });
+} else {
+  // In development, use service account key file
+  console.log('Using service account key file for development');
+  const keyFilename = process.env.GCP_STORAGE_KEYFILE;
+  
+  if (fs.existsSync(keyFilename)) {
+    storage = new Storage({
+      projectId: process.env.GCP_PROJECT_ID,
+      keyFilename: keyFilename, 
+    });
+  } else {
+    // Fallback to default credentials even in development
+    console.warn('Service account key file not found, using default credentials');
+    storage = new Storage({
+      projectId: process.env.GCP_PROJECT_ID,
+    });
+  }
+}
 
 const bucketName = process.env.GCP_BUCKET_NAME;
 const folderName = process.env.GCP_FOLDER_NAME;
