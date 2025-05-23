@@ -1,6 +1,7 @@
 /node_modules
 /src/storage
 /.env
+/index.html
 
 # VS Code settings
 /.vscode

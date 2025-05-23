@@ -47,27 +47,27 @@ module.exports = {
       },
       document_owners: {
         type: Sequelize.JSON,
-        allowNull: false,
+        allowNull: true,
       },
       developers: {
         type: Sequelize.JSON,
-        allowNull: false,
+        allowNull: true,
       },
       stakeholders: {
         type: Sequelize.JSON,
-        allowNull: false,
+        allowNull: true,
       },
       darci_roles: {
         type: Sequelize.JSON,
-        allowNull: false,
+        allowNull: true,
       },
       generated_sections: {
         type: Sequelize.JSON,
-        allowNull: false,
+        allowNull: true,
       },
       timeline: {
         type: Sequelize.JSON,
-        allowNull: false,
+        allowNull: true,
       },
       created_at: {
         allowNull: false,
