@@ -6,5 +6,6 @@
 # VS Code settings
 /.vscode
 
-# Service account key
-/genprd-github-action-service-key.json      
+# Service account key  
+src/config/genprd-github-action-service-key.json
+src/config/genprd-storage-bucket-service-key.json

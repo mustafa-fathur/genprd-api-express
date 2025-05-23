@@ -1,5 +1,6 @@
 const { PRD } = require('../models');
 const axios = require('axios');
+const { generatePRDPDF } = require('../utils/pdf-generator');
 
 const getAllPRDs = async (req, res) => {
   try {
@@ -495,6 +496,9 @@ const downloadPRD = async (req, res) => {
     const userId = req.user.id;
     const prdId = req.params.id;
     
+    console.log(`Starting PDF download for PRD ${prdId} by user ${userId}`);
+    
+    // Find the PRD
     const prd = await PRD.findOne({
       where: { 
         id: prdId,
@@ -509,17 +513,60 @@ const downloadPRD = async (req, res) => {
       });
     }
     
-    // For now, just return PRD data
-    return res.status(200).json({
-      status: 'success',
-      message: 'PRD download initiated',
-      data: prd
-    });
+    console.log('PRD found, current stage:', prd.document_stage);
+    
+    // Update document stage to 'finished' when downloading
+    if (prd.document_stage !== 'finished') {
+      await PRD.update(
+        { 
+          document_stage: 'finished',
+          updated_at: new Date()
+        },
+        {
+          where: { 
+            id: prdId,
+            user_id: userId 
+          }
+        }
+      );
+      console.log('PRD stage updated to finished');
+    }
+    
+    // Generate PDF
+    try {
+      console.log('Generating PDF...');
+      const pdfResult = await generatePRDPDF(prd.toJSON());
+      
+      console.log('PDF generated successfully:', pdfResult.url);
+      
+      return res.status(200).json({
+        status: 'success',
+        message: 'PDF generated successfully',
+        data: {
+          download_url: pdfResult.url, // This will be signed URL or public URL
+          public_url: pdfResult.publicUrl, // Alternative public URL
+          file_name: pdfResult.fileName,
+          gcs_path: pdfResult.gcsPath,
+          prd_id: prdId,
+          generated_at: new Date().toISOString(),
+          expires_at: pdfResult.expiresAt // Only present if using signed URLs
+        }
+      });
+      
+    } catch (pdfError) {
+      console.error('PDF generation error:', pdfError);
+      return res.status(500).json({
+        status: 'error',
+        message: 'Failed to generate PDF',
+        error: process.env.NODE_ENV === 'development' ? pdfError.message : undefined
+      });
+    }
+    
   } catch (err) {
-    console.error('Error downloading PRD:', err);
+    console.error('Error in downloadPRD:', err);
     return res.status(500).json({
       status: 'error',
-      message: 'Failed to download PRD',
+      message: 'Failed to process download request',
       error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   }
