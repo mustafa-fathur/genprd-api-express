@@ -11,7 +11,13 @@ All API endpoints are prefixed with:
 For local development, the full URL would be:
 
 ```
-http://localhost:8080/api
+http://localhost:3000/api
+```
+
+For production, the full URL would be:
+
+```
+https://express-backend-418864732285.asia-southeast2.run.app/api
 ```
 
 ## Authentication
@@ -32,13 +38,17 @@ Callback endpoint for Google OAuth authentication.
 
 ```json
 {
-  "token": "jwt-token-string",
-  "refreshToken": "refresh-token-string",
-  "user": {
-    "id": "user-id",
-    "email": "user-email@example.com",
-    "name": "User Name",
-    "picture": "profile-picture-url"
+  "status": "success",
+  "message": "Authentication successful",
+  "data": {
+    "token": "jwt-token-string",
+    "refreshToken": "refresh-token-string",
+    "user": {
+      "id": "user-id",
+      "email": "user-email@example.com",
+      "name": "User Name",
+      "avatar_url": "profile-picture-url"
+    }
   }
 }
 ```
@@ -61,7 +71,10 @@ Refresh an expired JWT token.
 
 ```json
 {
-  "token": "new-jwt-token-string"
+  "status": "success",
+  "data": {
+    "token": "new-jwt-token-string"
+  }
 }
 ```
 
@@ -88,7 +101,52 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
+  "status": "success",
   "message": "Logged out successfully"
+}
+```
+
+## Dashboard
+
+### Get Dashboard Data
+
+#### GET /api/dashboard
+
+Retrieves dashboard statistics and recent data for the authenticated user.
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "counts": {
+      "totalPRD": 15,
+      "totalPersonnel": 8,
+      "totalDraft": 3,
+      "totalInProgress": 5,
+      "totalFinished": 6,
+      "totalArchived": 1
+    },
+    "recentPRDs": [
+      {
+        "id": "prd-id-1",
+        "product_name": "Product Name",
+        "document_stage": "inprogress",
+        "document_version": "1.0",
+        "created_at": "2025-05-23T00:00:00.000Z",
+        "updated_at": "2025-05-23T00:00:00.000Z"
+      }
+    ]
+  }
 }
 ```
 
@@ -112,12 +170,14 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
-  "id": "user-id",
-  "email": "user-email@example.com",
-  "name": "User Name",
-  "picture": "profile-picture-url",
-  "createdAt": "2023-01-01T00:00:00.000Z",
-  "updatedAt": "2023-01-01T00:00:00.000Z"
+  "status": "success",
+  "data": {
+    "id": "user-id",
+    "name": "User Name",
+    "email": "user-email@example.com",
+    "avatar_url": "profile-picture-url",
+    "member_since": "2025-05-23T00:00:00.000Z"
+  }
 }
 ```
 
@@ -139,8 +199,7 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
-  "name": "Updated Name",
-  "picture": "updated-picture-url"
+  "name": "Updated Name"
 }
 ```
 
@@ -148,11 +207,14 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
-  "id": "user-id",
-  "email": "user-email@example.com",
-  "name": "Updated Name",
-  "picture": "updated-picture-url",
-  "updatedAt": "2023-01-01T00:00:00.000Z"
+  "status": "success",
+  "message": "Profile updated successfully",
+  "data": {
+    "id": "user-id",
+    "name": "Updated Name",
+    "email": "user-email@example.com",
+    "avatar_url": "profile-picture-url"
+  }
 }
 ```
 
@@ -162,7 +224,7 @@ Authorization: Bearer jwt-token-string
 
 #### GET /api/personnel
 
-Retrieves a list of all personnel records.
+Retrieves a list of all personnel records for the authenticated user.
 
 **Authentication Required:** Yes (JWT Token)
 
@@ -175,26 +237,20 @@ Authorization: Bearer jwt-token-string
 **Response:**
 
 ```json
-[
-  {
-    "id": "personnel-id-1",
-    "name": "Personnel Name",
-    "position": "Job Position",
-    "department": "Department",
-    "contact": "contact@example.com",
-    "createdAt": "2023-01-01T00:00:00.000Z",
-    "updatedAt": "2023-01-01T00:00:00.000Z"
-  },
-  {
-    "id": "personnel-id-2",
-    "name": "Another Personnel",
-    "position": "Another Position",
-    "department": "Another Department",
-    "contact": "another@example.com",
-    "createdAt": "2023-01-01T00:00:00.000Z",
-    "updatedAt": "2023-01-01T00:00:00.000Z"
-  }
-]
+{
+  "status": "success",
+  "data": [
+    {
+      "id": "personnel-id-1",
+      "name": "Personnel Name",
+      "role": "Software Engineer",
+      "contact": "contact@example.com",
+      "user_id": "user-id",
+      "created_at": "2025-05-23T00:00:00.000Z",
+      "updated_at": "2025-05-23T00:00:00.000Z"
+    }
+  ]
+}
 ```
 
 ### Get Personnel by ID
@@ -219,13 +275,16 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
-  "id": "personnel-id",
-  "name": "Personnel Name",
-  "position": "Job Position",
-  "department": "Department",
-  "contact": "contact@example.com",
-  "createdAt": "2023-01-01T00:00:00.000Z",
-  "updatedAt": "2023-01-01T00:00:00.000Z"
+  "status": "success",
+  "data": {
+    "id": "personnel-id",
+    "name": "Personnel Name",
+    "role": "Software Engineer",
+    "contact": "contact@example.com",
+    "user_id": "user-id",
+    "created_at": "2025-05-23T00:00:00.000Z",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
 }
 ```
 
@@ -252,8 +311,7 @@ Authorization: Bearer jwt-token-string
 ```json
 {
   "name": "New Personnel",
-  "position": "Job Position",
-  "department": "Department",
+  "role": "Product Manager",
   "contact": "contact@example.com"
 }
 ```
@@ -262,19 +320,23 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
-  "id": "new-personnel-id",
-  "name": "New Personnel",
-  "position": "Job Position",
-  "department": "Department",
-  "contact": "contact@example.com",
-  "createdAt": "2023-01-01T00:00:00.000Z",
-  "updatedAt": "2023-01-01T00:00:00.000Z"
+  "status": "success",
+  "message": "Personnel created successfully",
+  "data": {
+    "id": "new-personnel-id",
+    "name": "New Personnel",
+    "role": "Product Manager",
+    "contact": "contact@example.com",
+    "user_id": "user-id",
+    "created_at": "2025-05-23T00:00:00.000Z",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
 }
 ```
 
 **Error Responses:**
 
-- 400 Bad Request - Missing required fields
+- 400 Bad Request - Missing required fields (name, role, contact)
 
 ### Update Personnel
 
@@ -299,8 +361,7 @@ Authorization: Bearer jwt-token-string
 ```json
 {
   "name": "Updated Personnel Name",
-  "position": "Updated Position",
-  "department": "Updated Department",
+  "role": "Updated Role",
   "contact": "updated@example.com"
 }
 ```
@@ -309,19 +370,22 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
-  "id": "personnel-id",
-  "name": "Updated Personnel Name",
-  "position": "Updated Position",
-  "department": "Updated Department",
-  "contact": "updated@example.com",
-  "updatedAt": "2023-01-01T00:00:00.000Z"
+  "status": "success",
+  "message": "Personnel updated successfully",
+  "data": {
+    "id": "personnel-id",
+    "name": "Updated Personnel Name",
+    "role": "Updated Role",
+    "contact": "updated@example.com",
+    "user_id": "user-id",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
 }
 ```
 
 **Error Responses:**
 
 - 404 Not Found - Personnel with specified ID does not exist
-- 400 Bad Request - Invalid request body
 
 ### Delete Personnel
 
@@ -345,6 +409,7 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
+  "status": "success",
   "message": "Personnel deleted successfully"
 }
 ```
@@ -355,11 +420,11 @@ Authorization: Bearer jwt-token-string
 
 ## PRD (Product Requirements Document)
 
-**Note:** PRD endpoints are currently under development. The basic route structure is in place, but full implementation of CRUD operations is pending.
+### Get All PRDs
 
-### GET /api/prd
+#### GET /api/prd
 
-Currently returns a placeholder message.
+Retrieves a list of all PRD records for the authenticated user.
 
 **Authentication Required:** Yes (JWT Token)
 
@@ -373,9 +438,403 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
-  "message": "Ini Route PRD"
+  "status": "success",
+  "data": [
+    {
+      "id": "prd-id-1",
+      "user_id": "user-id",
+      "product_name": "TaskMaster Pro",
+      "document_version": "1.0",
+      "document_stage": "draft",
+      "project_overview": "A comprehensive task management application...",
+      "start_date": "2025-05-23",
+      "end_date": "2025-12-31",
+      "document_owners": ["John Doe", "Jane Smith"],
+      "developers": ["Dev Team A", "Dev Team B"],
+      "stakeholders": ["Product Manager", "CEO"],
+      "darci_roles": {
+        "decider": ["CEO"],
+        "accountable": ["Product Manager"],
+        "responsible": ["Dev Team A"],
+        "consulted": ["UX Designer"],
+        "informed": ["Marketing Team"]
+      },
+      "generated_sections": {},
+      "timeline": [],
+      "created_at": "2025-05-23T00:00:00.000Z",
+      "updated_at": "2025-05-23T00:00:00.000Z"
+    }
+  ]
 }
 ```
+
+### Get PRD by ID
+
+#### GET /api/prd/:id
+
+Retrieves a specific PRD record by ID.
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**URL Parameters:**
+
+- `id` - The ID of the PRD to retrieve
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "id": "prd-id",
+    "user_id": "user-id",
+    "product_name": "TaskMaster Pro",
+    "document_version": "1.0",
+    "document_stage": "draft",
+    "project_overview": "A comprehensive task management application...",
+    "start_date": "2025-05-23",
+    "end_date": "2025-12-31",
+    "document_owners": ["John Doe"],
+    "developers": ["Dev Team A"],
+    "stakeholders": ["Product Manager"],
+    "darci_roles": {
+      "decider": ["CEO"],
+      "accountable": ["Product Manager"],
+      "responsible": ["Dev Team A"],
+      "consulted": ["UX Designer"],
+      "informed": ["Marketing Team"]
+    },
+    "generated_sections": {
+      "overview": {
+        "sections": [
+          {
+            "title": "Problem Statement",
+            "content": "Current task management solutions lack..."
+          }
+        ]
+      },
+      "user_stories": {
+        "stories": [
+          {
+            "title": "User Login",
+            "priority": "high",
+            "user_story": "As a user, I want to login securely...",
+            "acceptance_criteria": "Given valid credentials..."
+          }
+        ]
+      }
+    },
+    "timeline": [
+      {
+        "time_period": "2025-06-01 - 2025-06-30",
+        "activity": "Requirements Gathering",
+        "pic": "Product Manager"
+      }
+    ],
+    "created_at": "2025-05-23T00:00:00.000Z",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+
+- 404 Not Found - PRD with specified ID does not exist
+
+### Create PRD
+
+#### POST /api/prd
+
+Creates a new PRD with AI-generated content via Flask API.
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**Request Body:**
+
+```json
+{
+  "product_name": "TaskMaster Pro",
+  "document_version": "1.0",
+  "project_overview": "A comprehensive task management application for teams...",
+  "start_date": "2025-05-23",
+  "end_date": "2025-12-31",
+  "document_owner": ["John Doe"],
+  "developer": ["Dev Team A", "Dev Team B"],
+  "stakeholders": ["Product Manager", "CEO"],
+  "darci_roles": {
+    "decider": ["CEO"],
+    "accountable": ["Product Manager"],
+    "responsible": ["Dev Team A"],
+    "consulted": ["UX Designer"],
+    "informed": ["Marketing Team"]
+  },
+  "generate_content": true
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "PRD created successfully",
+  "data": {
+    "id": "new-prd-id",
+    "user_id": "user-id",
+    "product_name": "TaskMaster Pro",
+    "document_version": "1.0",
+    "document_stage": "draft",
+    "project_overview": "A comprehensive task management application...",
+    "start_date": "2025-05-23",
+    "end_date": "2025-12-31",
+    "document_owners": ["John Doe"],
+    "developers": ["Dev Team A", "Dev Team B"],
+    "stakeholders": ["Product Manager", "CEO"],
+    "darci_roles": {
+      "decider": ["CEO"],
+      "accountable": ["Product Manager"],
+      "responsible": ["Dev Team A"],
+      "consulted": ["UX Designer"],
+      "informed": ["Marketing Team"]
+    },
+    "generated_sections": {
+      "overview": {
+        "sections": [...]
+      },
+      "user_stories": {
+        "stories": [...]
+      },
+      "success_metrics": {
+        "metrics": [...]
+      },
+      "project_timeline": {
+        "phases": [...]
+      },
+      "darci": {
+        "roles": [...]
+      }
+    },
+    "timeline": [
+      {
+        "time_period": "2025-06-01 - 2025-06-30",
+        "activity": "Requirements Gathering",
+        "pic": "Product Manager"
+      }
+    ],
+    "created_at": "2025-05-23T00:00:00.000Z",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+
+- 400 Bad Request - Missing required fields (product_name, project_overview, start_date, end_date)
+
+### Update PRD
+
+#### PUT /api/prd/:id
+
+Updates an existing PRD (manual editing only, no AI regeneration).
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**URL Parameters:**
+
+- `id` - The ID of the PRD to update
+
+**Request Body:**
+
+```json
+{
+  "product_name": "Updated TaskMaster Pro",
+  "document_version": "1.1",
+  "project_overview": "Updated project overview...",
+  "start_date": "2025-06-01",
+  "end_date": "2025-12-31",
+  "document_owners": ["John Doe", "Jane Smith"],
+  "developers": ["Dev Team A"],
+  "stakeholders": ["Product Manager"],
+  "darci_roles": {
+    "decider": ["CEO"],
+    "accountable": ["Product Manager"],
+    "responsible": ["Dev Team A"],
+    "consulted": ["UX Designer"],
+    "informed": ["Marketing Team"]
+  },
+  "generated_sections": {
+    "overview": {
+      "sections": [
+        {
+          "title": "Updated Problem Statement",
+          "content": "Updated content..."
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "time_period": "2025-06-01 - 2025-06-30",
+      "activity": "Updated Requirements Gathering",
+      "pic": "Product Manager"
+    }
+  ]
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "PRD updated successfully",
+  "data": {
+    "id": "prd-id",
+    "document_stage": "inprogress",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+
+- 404 Not Found - PRD with specified ID does not exist
+
+### Delete PRD
+
+#### DELETE /api/prd/:id
+
+Deletes a PRD record.
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**URL Parameters:**
+
+- `id` - The ID of the PRD to delete
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "PRD deleted successfully"
+}
+```
+
+**Error Responses:**
+
+- 404 Not Found - PRD with specified ID does not exist or you do not have permission to delete it
+
+### Archive PRD
+
+#### PUT /api/prd/:id/archive
+
+Archives a PRD (changes document_stage to 'archived').
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**URL Parameters:**
+
+- `id` - The ID of the PRD to archive
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "PRD archived successfully",
+  "data": {
+    "id": "prd-id",
+    "document_stage": "archived",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+
+- 404 Not Found - PRD with specified ID does not exist
+- 400 Bad Request - PRD is already archived
+
+### Download PRD as PDF
+
+#### GET /api/prd/:id/download
+
+Generates and downloads a PDF version of the PRD. Updates document_stage to 'finished'.
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**URL Parameters:**
+
+- `id` - The ID of the PRD to download
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "PDF generated successfully",
+  "data": {
+    "download_url": "https://storage.googleapis.com/bucket-name/folder/PRD_TaskMaster_Pro_123_timestamp.pdf",
+    "public_url": "https://storage.googleapis.com/bucket-name/folder/PRD_TaskMaster_Pro_123_timestamp.pdf",
+    "file_name": "PRD_TaskMaster_Pro_123_timestamp.pdf",
+    "gcs_path": "prd-pdf-documents/PRD_TaskMaster_Pro_123_timestamp.pdf",
+    "prd_id": "prd-id",
+    "generated_at": "2025-05-23T00:00:00.000Z",
+    "expires_at": "2025-05-24T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+
+- 404 Not Found - PRD with specified ID does not exist
+- 500 Internal Server Error - PDF generation failed
+
+## Document Stages
+
+PRDs have the following stages:
+
+- **draft** - Initial creation state
+- **inprogress** - Currently being edited
+- **finished** - Downloaded as PDF
+- **archived** - Archived for long-term storage
 
 ## Error Handling
 
@@ -385,8 +844,8 @@ All endpoints may return the following error responses:
 
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Authentication required"
+  "status": "error",
+  "message": "Unauthorized access"
 }
 ```
 
@@ -394,8 +853,27 @@ All endpoints may return the following error responses:
 
 ```json
 {
-  "error": "Forbidden",
+  "status": "error",
   "message": "You do not have permission to access this resource"
+}
+```
+
+### 404 Not Found
+
+```json
+{
+  "status": "error",
+  "message": "Resource not found"
+}
+```
+
+### 400 Bad Request
+
+```json
+{
+  "status": "error",
+  "message": "Invalid request data",
+  "error": "Detailed error message"
 }
 ```
 
@@ -403,8 +881,9 @@ All endpoints may return the following error responses:
 
 ```json
 {
-  "error": "Internal Server Error",
-  "message": "An unexpected error occurred"
+  "status": "error",
+  "message": "An unexpected error occurred",
+  "error": "Detailed error message (development only)"
 }
 ```
 
@@ -417,3 +896,14 @@ Authorization: Bearer jwt-token-string
 ```
 
 If the token is missing, invalid, or expired, a 401 Unauthorized response will be returned.
+
+## Rate Limiting
+
+- PRD creation with AI generation has a 3-minute timeout due to Gemini API processing time
+- PDF generation may take 30-60 seconds depending on document complexity
+
+## External Dependencies
+
+- **Flask API**: Used for AI-powered PRD content generation
+- **Google Cloud Storage**: Used for PDF file storage and public access
+- **Google OAuth**: Used for user authentication

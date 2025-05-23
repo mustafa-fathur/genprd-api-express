@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
   console.log('Using service account key file for development');
   const keyFilename = process.env.GCP_STORAGE_KEYFILE;
   
-  if (fs.existsSync(keyFilename)) {
+  if (keyFilename && fs.existsSync(keyFilename)) {
     storage = new Storage({
       projectId: process.env.GCP_PROJECT_ID,
       keyFilename: keyFilename, 
@@ -51,6 +51,56 @@ Handlebars.registerHelper('formatDate', function(date) {
     timeZone: 'Asia/Jakarta'
   };
   return date.toLocaleDateString('en-US', options);
+});
+
+// Add new helper for timeline period formatting
+Handlebars.registerHelper('formatTimelinePeriod', function(timelinePeriod) {
+  if (!timelinePeriod) return 'N/A';
+  
+  // Check if it's already in the correct format (contains month names)
+  if (timelinePeriod.includes('January') || timelinePeriod.includes('February') || 
+      timelinePeriod.includes('March') || timelinePeriod.includes('April') ||
+      timelinePeriod.includes('May') || timelinePeriod.includes('June') ||
+      timelinePeriod.includes('July') || timelinePeriod.includes('August') ||
+      timelinePeriod.includes('September') || timelinePeriod.includes('October') ||
+      timelinePeriod.includes('November') || timelinePeriod.includes('December')) {
+    return timelinePeriod;
+  }
+  
+  // Try to parse date ranges like "2025-06-15 - 2025-07-31"
+  const dateRangeMatch = timelinePeriod.match(/(\d{4}-\d{2}-\d{2})\s*-\s*(\d{4}-\d{2}-\d{2})/);
+  if (dateRangeMatch) {
+    const startDate = new Date(dateRangeMatch[1]);
+    const endDate = new Date(dateRangeMatch[2]);
+    
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      timeZone: 'Asia/Jakarta'
+    };
+    
+    const formattedStart = startDate.toLocaleDateString('en-US', options);
+    const formattedEnd = endDate.toLocaleDateString('en-US', options);
+    
+    return `${formattedStart} - ${formattedEnd}`;
+  }
+  
+  // Try to parse single date like "2025-06-15"
+  const singleDateMatch = timelinePeriod.match(/^\d{4}-\d{2}-\d{2}$/);
+  if (singleDateMatch) {
+    const date = new Date(timelinePeriod);
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      timeZone: 'Asia/Jakarta'
+    };
+    return date.toLocaleDateString('en-US', options);
+  }
+  
+  // Return as-is if no date pattern matches
+  return timelinePeriod;
 });
 
 Handlebars.registerHelper('joinArray', function(array) {
@@ -93,8 +143,8 @@ const generatePRDPDF = async (prdData) => {
     
     console.log('HTML template compiled successfully');
     
-    // Launch Puppeteer
-    browser = await puppeteer.launch({
+    // Configure Puppeteer for different environments
+    const puppeteerConfig = {
       headless: 'new',
       args: [
         '--no-sandbox',
@@ -103,9 +153,24 @@ const generatePRDPDF = async (prdData) => {
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
         '--no-zygote',
-        '--disable-gpu'
+        '--disable-gpu',
+        '--disable-extensions',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding'
       ]
-    });
+    };
+
+    // In production (Cloud Run), use the installed Chrome
+    if (process.env.NODE_ENV === 'production') {
+      puppeteerConfig.executablePath = '/usr/bin/google-chrome-stable';
+      console.log('Using system Chrome for production');
+    } else {
+      console.log('Using bundled Chromium for development');
+    }
+    
+    // Launch Puppeteer
+    browser = await puppeteer.launch(puppeteerConfig);
     
     const page = await browser.newPage();
     
@@ -185,7 +250,11 @@ const generatePRDPDF = async (prdData) => {
   } finally {
     // Cleanup
     if (browser) {
-      await browser.close();
+      try {
+        await browser.close();
+      } catch (closeError) {
+        console.warn('Warning: Could not close browser:', closeError.message);
+      }
     }
     
     // Remove temporary PDF file
