@@ -59,12 +59,13 @@ const getPRDById = async (req, res) => {
   }
 };
 
-// Create a new PRD
+// Create a new PRD (with Flask API for content generation)
 const createPRD = async (req, res) => {
   try {
     console.log('Starting createPRD function');
     const userId = req.user.id;
     console.log('User ID:', userId);
+    console.log(process.env.FLASK_URL);
     
     const {
       product_name,
@@ -118,9 +119,7 @@ const createPRD = async (req, res) => {
 
         console.log('Calling Flask API with payload structure:', Object.keys(flaskPayload));
         
-        // Explicitly use the correct Flask URL with the proper port
-        // Use process.env.FLASK_URL if available, otherwise use hardcoded 127.0.0.1:8000
-        const flaskUrl = process.env.FLASK_URL || 'http://127.0.0.1:8000';
+        const flaskUrl = process.env.FLASK_URL;
         console.log('Sending request to Flask API:', `${flaskUrl}/api/generate-prd`);
         
         const flaskResponse = await axios.post(
@@ -152,7 +151,6 @@ const createPRD = async (req, res) => {
           console.error('API Response Status:', apiError.response.status);
           console.error('API Response Data:', apiError.response.data);
         } else if (apiError.request) {
-          // The request was made but no response was received
           console.error('No response received:', apiError.request._currentUrl);
         }
         // Continue with PRD creation even if AI generation fails
@@ -176,7 +174,6 @@ const createPRD = async (req, res) => {
       });
     } else {
       console.log('Using input DARCI roles');
-      // Use the input DARCI roles if there's no generated data
       finalDarciRoles = darci_roles || {
         decider: [],
         accountable: [],
@@ -220,7 +217,6 @@ const createPRD = async (req, res) => {
       });
     } catch (dbError) {
       console.error('Database error creating PRD:', dbError);
-      // Check for validation errors
       if (dbError.name === 'SequelizeValidationError') {
         return res.status(400).json({
           status: 'error',
@@ -245,7 +241,7 @@ const createPRD = async (req, res) => {
   }
 };
 
-// Update PRD
+// Update PRD (Manual editing only - no Flask API regeneration)
 const updatePRD = async (req, res) => {
   try {
     console.log('Starting updatePRD function');
@@ -280,8 +276,7 @@ const updatePRD = async (req, res) => {
       stakeholders,
       darci_roles,
       generated_sections,
-      timeline,
-      regenerate_content = false
+      timeline
     } = req.body;
     
     // Prepare update data
@@ -305,52 +300,7 @@ const updatePRD = async (req, res) => {
     
     console.log('Update data prepared:', Object.keys(updateData));
     
-    // If regenerate_content is true, call Flask API
-    if (regenerate_content) {
-      console.log('Regenerating content with Flask API');
-      try {
-        const flaskPayload = {
-          document_version: updateData.document_version || existingPrd.document_version,
-          product_name: updateData.product_name || existingPrd.product_name,
-          document_owner: updateData.document_owners || existingPrd.document_owners,
-          developer: updateData.developers || existingPrd.developers,
-          stakeholders: updateData.stakeholders || existingPrd.stakeholders,
-          document_stage: 'inprogress',
-          project_overview: updateData.project_overview || existingPrd.project_overview,
-          darci_roles: updateData.darci_roles || existingPrd.darci_roles,
-          start_date: updateData.start_date || existingPrd.start_date,
-          end_date: updateData.end_date || existingPrd.end_date
-        };
-        
-        const flaskUrl = process.env.FLASK_URL || 'http://127.0.0.1:8000';
-        console.log('Calling Flask API for content regeneration');
-        
-        const flaskResponse = await axios.post(
-          `${flaskUrl}/api/generate-prd`,
-          flaskPayload,
-          {
-            headers: { 'Content-Type': 'application/json' },
-            timeout: 180000
-          }
-        );
-        
-        if (flaskResponse.status === 200) {
-          console.log('Flask API regeneration successful');
-          updateData.generated_sections = flaskResponse.data;
-          
-          // Extract timeline if available
-          if (flaskResponse.data && flaskResponse.data.project_timeline && 
-              flaskResponse.data.project_timeline.phases) {
-            updateData.timeline = flaskResponse.data.project_timeline.phases;
-          }
-        }
-      } catch (apiError) {
-        console.error('Error regenerating content:', apiError.message);
-        // Continue with update even if regeneration fails
-      }
-    }
-    
-    // Update the PRD
+    // Update the PRD (no Flask API calls - pure manual editing)
     await PRD.update(updateData, {
       where: { 
         id: prdId,
@@ -365,7 +315,7 @@ const updatePRD = async (req, res) => {
     
     return res.status(200).json({
       status: 'success',
-      message: regenerate_content ? 'PRD updated with regenerated content' : 'PRD updated successfully',
+      message: 'PRD updated successfully',
       data: updatedPrd
     });
   } catch (err) {
@@ -543,13 +493,13 @@ const downloadPRD = async (req, res) => {
         status: 'success',
         message: 'PDF generated successfully',
         data: {
-          download_url: pdfResult.url, // This will be signed URL or public URL
-          public_url: pdfResult.publicUrl, // Alternative public URL
+          download_url: pdfResult.url,
+          public_url: pdfResult.publicUrl,
           file_name: pdfResult.fileName,
           gcs_path: pdfResult.gcsPath,
           prd_id: prdId,
           generated_at: new Date().toISOString(),
-          expires_at: pdfResult.expiresAt // Only present if using signed URLs
+          expires_at: pdfResult.expiresAt
         }
       });
       
