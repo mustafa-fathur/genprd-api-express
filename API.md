@@ -751,7 +751,7 @@ Authorization: Bearer jwt-token-string
 
 ### Archive PRD
 
-#### PUT /api/prd/:id/archive
+#### PATCH /api/prd/:id/archive
 
 Archives a PRD (changes document_stage to 'archived').
 
@@ -768,6 +768,24 @@ Authorization: Bearer jwt-token-string
 - `id` - The ID of the PRD to archive
 
 **Response:**
+
+```json
+{
+  "status": "success",
+  "message": "PRD archived successfully",
+  "data": {
+    "id": "prd-id",
+    "document_stage": "archived",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+
+- 404 Not Found - PRD with specified ID does not exist
+- 400 Bad Request - PRD is already archived
+- 500 Internal Server Error - Server error while processing the request
 
 ```json
 {
