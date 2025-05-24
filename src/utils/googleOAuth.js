@@ -3,19 +3,19 @@ const { OAuth2Client } = require('google-auth-library');
 // Create OAuth client
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI
+  process.env.GOOGLE_CLIENT_SECRET
 );
 
-const getGoogleAuthURL = () => {
+const getGoogleAuthURL = (customRedirectUri) => {
   return client.generateAuthUrl({
     access_type: 'offline',
     prompt: 'consent',
     scope: ['email', 'profile'],
+    redirect_uri: customRedirectUri,
   });
 };
 
-const getGoogleUser = async (code) => {
+const getGoogleUser = async (code, redirectUri) => {
   try {
     console.log('Getting tokens from Google...');
     
@@ -24,7 +24,7 @@ const getGoogleUser = async (code) => {
       code: code,
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      redirect_uri: redirectUri,
     });
     
     console.log('Tokens received, getting user info...');
