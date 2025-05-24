@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', routes);
 
 app.get('/', (req, res) => {
-  res.send('Welcome to GenPRD Express API!');
+  res.send('Welcome to GenPRD Express Root!');
 });
 
 app.listen(port, () => {

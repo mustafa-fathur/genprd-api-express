@@ -6,6 +6,9 @@ const prdRoutes = require('./prd.routes');
 const authMiddleware = require('../middleware/auth.middleware');
 const dashboardRoutes = require('./dashboard.routes');
 
+router.get('/', (req, res) => {
+  res.send('Welcome to GenPRD Express API!');
+});
 router.use('/auth', authRoutes);
 router.use('/users', authMiddleware, userRoutes);
 router.use('/dashboard', authMiddleware, dashboardRoutes);
