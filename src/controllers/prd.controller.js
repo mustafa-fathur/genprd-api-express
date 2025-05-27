@@ -73,14 +73,16 @@ const createPRD = async (req, res) => {
       project_overview,
       start_date,
       end_date,
-      document_owner,
-      developer,
+      document_owners,  // FIX: Change from document_owner to document_owners
+      developers,       // FIX: Change from developer to developers
       stakeholders,
       darci_roles,
       generate_content = true
     } = req.body;
     
     console.log('Request body parsed successfully');
+    console.log('Document owners received:', document_owners);
+    console.log('Developers received:', developers);
     
     // Validate required fields
     if (!product_name || !project_overview || !start_date || !end_date) {
@@ -101,8 +103,8 @@ const createPRD = async (req, res) => {
         const flaskPayload = {
           document_version: document_version || '1.0',
           product_name,
-          document_owner: document_owner || [],
-          developer: developer || [],
+          document_owner: document_owners || [],     // FIX: Send as document_owner to Flask API
+          developer: developers || [],               // FIX: Send as developer to Flask API
           stakeholders: stakeholders || [],
           document_stage: 'draft',
           project_overview,
@@ -194,8 +196,8 @@ const createPRD = async (req, res) => {
       project_overview: project_overview,
       start_date: start_date,
       end_date: end_date,
-      document_owners: document_owner || [],
-      developers: developer || [],
+      document_owners: document_owners || [],   // FIX: Use document_owners (plural)
+      developers: developers || [],             // FIX: Use developers (plural)
       stakeholders: stakeholders || [],
       darci_roles: finalDarciRoles,
       generated_sections: generatedSections,
@@ -203,6 +205,8 @@ const createPRD = async (req, res) => {
     };
     
     console.log('Creating PRD with data structure:', Object.keys(prdData));
+    console.log('Document owners for DB:', prdData.document_owners);
+    console.log('Developers for DB:', prdData.developers);
     console.log('Timeline data type:', Array.isArray(prdData.timeline) ? 'array' : typeof prdData.timeline);
     console.log('Generated sections data type:', typeof prdData.generated_sections);
     
