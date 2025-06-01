@@ -10,6 +10,7 @@ router.get('/web/google/callback', authController.webGoogleCallback);
 // Mobile Authentication Routes  
 router.get('/mobile/google', authController.mobileGoogleLogin);
 router.get('/mobile/google/callback', authController.mobileGoogleCallback);
+router.post('/verify-google-token', authController.verifyGoogleToken);
 
 // Shared routes
 router.post('/refresh', authController.refreshToken);

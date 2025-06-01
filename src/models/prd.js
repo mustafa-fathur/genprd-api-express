@@ -26,6 +26,15 @@ module.exports = (sequelize, DataTypes) => {
     darci_roles: DataTypes.JSON,
     generated_sections: DataTypes.JSON,
     timeline: DataTypes.JSON,
+    is_pinned: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
+    last_viewed_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'PRD',

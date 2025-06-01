@@ -70,7 +70,16 @@ const webGoogleCallback = async (req, res) => {
 
 // MOBILE AUTHENTICATION
 const mobileGoogleLogin = async (req, res) => {
-    const url = getGoogleAuthURL(`${process.env.BASE_URL}/api/auth/mobile/google/callback`);
+    // Deteksi user agent atau parameter untuk menentukan dari mana request berasal
+    const isAndroidEmulator = req.query.platform === 'android_emulator' || 
+                             req.headers['user-agent'].includes('Android');
+    
+    // Pilih URL callback yang sesuai
+    const callbackUrl = isAndroidEmulator 
+        ? `${process.env.BASE_URL.replace('localhost', '10.0.2.2')}/api/auth/mobile/google/callback` 
+        : `${process.env.BASE_URL}/api/auth/mobile/google/callback`;
+    
+    const url = getGoogleAuthURL(callbackUrl);
     console.log("Mobile: Redirecting to Google OAuth URL:", url);
     res.redirect(url);
 };
@@ -193,11 +202,111 @@ const logout = async (req, res) => {
     }
 };
 
+const verifyGoogleToken = async (req, res) => {
+  try {
+    console.log("Received request to verify Google token");
+    const { id_token, access_token } = req.body;
+    
+    if (!id_token) {
+      console.log("Missing ID token");
+      return res.status(400).json({ 
+        status: 'error', 
+        message: 'ID token is required' 
+      });
+    }
+    
+    console.log("Verifying Google token...");
+    
+    try {
+      // Verifikasi token menggunakan Google API
+      const { OAuth2Client } = require('google-auth-library');
+      const client = new OAuth2Client(
+        process.env.GOOGLE_CLIENT_ID,
+        process.env.GOOGLE_CLIENT_SECRET
+      );
+      
+      const ticket = await client.verifyIdToken({
+        idToken: id_token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      
+      const payload = ticket.getPayload();
+      console.log("Token verified successfully for:", payload.email);
+      
+      const googleId = payload['sub'];
+      const email = payload['email'];
+      const name = payload['name'] || email.split('@')[0];
+      const picture = payload['picture'];
+      
+      // Cari atau buat user
+      console.log("Finding or creating user in database");
+      let user = await User.findOne({ where: { email: email } });
+      
+      if (!user) {
+        console.log("Creating new user");
+        user = await User.create({
+          google_id: googleId,
+          email: email,
+          name: name,
+          avatar_url: picture,
+        });
+      } else if (user.google_id !== googleId) {
+        // Update google_id jika berbeda
+        user.google_id = googleId;
+        await user.save();
+      }
+      
+      // Generate token
+      console.log("Generating tokens");
+      const accessToken = generateToken({ id: user.id, email: user.email });
+      const refreshToken = generateRefreshToken({ id: user.id });
+      
+      // Simpan refresh token
+      await RefreshToken.create({ 
+        token: refreshToken, 
+        user_id: user.id,
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        revoked: false
+      });
+      
+      // Kembalikan response
+      console.log("Authentication successful, returning tokens");
+      return res.json({
+        status: 'success',
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          avatar_url: user.avatar_url,
+        }
+      });
+      
+    } catch (error) {
+      console.error("Error verifying Google token:", error);
+      return res.status(401).json({ 
+        status: 'error', 
+        message: 'Invalid token',
+        error: error.message 
+      });
+    }
+  } catch (err) {
+    console.error("Unhandled error:", err);
+    return res.status(500).json({ 
+      status: 'error', 
+      message: 'Server error',
+      error: err.message 
+    });
+  }
+};
+
 module.exports = {
     webGoogleLogin,
     webGoogleCallback,
     mobileGoogleLogin,
     mobileGoogleCallback,
+    verifyGoogleToken,
     refreshToken,
     logout
 };

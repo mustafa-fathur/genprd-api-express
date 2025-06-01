@@ -5,7 +5,13 @@ const cors = require('cors');
 const port = process.env.PORT || 8080;
 const routes = require('./src/routes');
 
-app.use(cors());
+// Konfigurasi CORS untuk mengizinkan request dari aplikasi mobile
+app.use(cors({
+  origin: '*', // Untuk development, lebih baik spesifikasikan origin yang diizinkan di production
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', routes);

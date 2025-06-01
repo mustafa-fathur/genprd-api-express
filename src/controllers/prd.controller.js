@@ -1,19 +1,67 @@
-const { PRD } = require('../models');
+const { PRD, User } = require('../models');
 const axios = require('axios');
 const { generatePRDPDF } = require('../utils/pdf-generator');
+const { Op } = require('sequelize');
 
+// Get all PRDs with improved filtering and pagination
 const getAllPRDs = async (req, res) => {
   try {
     const userId = req.user.id;
+    const { 
+      page = 1, 
+      limit = 10, 
+      stage, 
+      search, 
+      sort = 'updated_at', 
+      order = 'DESC',
+      all = false // Parameter untuk mengambil semua PRD tanpa pagination
+    } = req.query;
     
-    const prds = await PRD.findAll({
-      where: { user_id: userId },
-      order: [['updated_at', 'DESC']]
-    });
+    // Build where conditions
+    const whereConditions = { user_id: userId };
+    
+    // Filter by document_stage if provided
+    if (stage && stage !== 'all') {
+      whereConditions.document_stage = stage;
+    }
+    
+    // Add search functionality
+    if (search) {
+      whereConditions[Op.or] = [
+        { product_name: { [Op.iLike]: `%${search}%` } },
+        { project_overview: { [Op.iLike]: `%${search}%` } }
+      ];
+    }
+    
+    // Pagination options
+    const options = {
+      where: whereConditions,
+      order: [[sort, order]],
+      attributes: [
+        'id', 'product_name', 'document_stage', 'document_version', 
+        'project_overview', 'start_date', 'end_date', 'is_pinned', 
+        'created_at', 'updated_at', 'last_viewed_at'
+      ]
+    };
+    
+    // Add pagination unless all=true
+    if (!all) {
+      const offset = (page - 1) * limit;
+      options.offset = offset;
+      options.limit = parseInt(limit);
+    }
+    
+    // Get PRDs with count
+    const { count, rows: prds } = await PRD.findAndCountAll(options);
     
     return res.status(200).json({
       status: 'success',
-      data: prds
+      data: {
+        total: count,
+        pages: all ? 1 : Math.ceil(count / limit),
+        current_page: parseInt(page),
+        prds
+      }
     });
   } catch (err) {
     console.error('Error getting PRDs:', err);
@@ -25,7 +73,45 @@ const getAllPRDs = async (req, res) => {
   }
 };
 
-// Get PRD by ID
+// Get recent PRDs for sidebar
+const getRecentPRDs = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const limit = parseInt(req.query.limit) || 10;
+    
+    // Get pinned PRDs first, then most recently viewed/updated
+    const recentPRDs = await PRD.findAll({
+      where: { 
+        user_id: userId,
+        document_stage: { [Op.ne]: 'archived' } // Exclude archived
+      },
+      order: [
+        ['is_pinned', 'DESC'], // Pinned PRDs first
+        ['last_viewed_at', 'DESC'], // Then by last viewed
+        ['updated_at', 'DESC'] // Then by last updated
+      ],
+      limit: limit,
+      attributes: [
+        'id', 'product_name', 'document_stage', 
+        'updated_at', 'is_pinned', 'last_viewed_at'
+      ]
+    });
+    
+    return res.status(200).json({
+      status: 'success',
+      data: recentPRDs
+    });
+  } catch (err) {
+    console.error('Error getting recent PRDs:', err);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to get recent PRDs',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+};
+
+// Get PRD by ID with tracking of last viewed
 const getPRDById = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -44,6 +130,9 @@ const getPRDById = async (req, res) => {
         message: 'PRD not found'
       });
     }
+    
+    // Update last_viewed_at timestamp
+    await prd.update({ last_viewed_at: new Date() });
     
     return res.status(200).json({
       status: 'success',
@@ -73,11 +162,12 @@ const createPRD = async (req, res) => {
       project_overview,
       start_date,
       end_date,
-      document_owners,  // FIX: Change from document_owner to document_owners
-      developers,       // FIX: Change from developer to developers
+      document_owners,
+      developers,
       stakeholders,
       darci_roles,
-      generate_content = true
+      generate_content = true,
+      document_stage = 'draft' // Default to draft but allow override
     } = req.body;
     
     console.log('Request body parsed successfully');
@@ -103,10 +193,10 @@ const createPRD = async (req, res) => {
         const flaskPayload = {
           document_version: document_version || '1.0',
           product_name,
-          document_owner: document_owners || [],     // FIX: Send as document_owner to Flask API
-          developer: developers || [],               // FIX: Send as developer to Flask API
+          document_owner: document_owners || [],
+          developer: developers || [],
           stakeholders: stakeholders || [],
-          document_stage: 'draft',
+          document_stage: document_stage || 'draft',
           project_overview,
           darci_roles: darci_roles || {
             decider: [],
@@ -192,23 +282,21 @@ const createPRD = async (req, res) => {
       user_id: userId,
       product_name: product_name,
       document_version: document_version || '1.0',
-      document_stage: 'draft',
+      document_stage: document_stage || 'draft',
       project_overview: project_overview,
       start_date: start_date,
       end_date: end_date,
-      document_owners: document_owners || [],   // FIX: Use document_owners (plural)
-      developers: developers || [],             // FIX: Use developers (plural)
+      document_owners: document_owners || [],
+      developers: developers || [],
       stakeholders: stakeholders || [],
       darci_roles: finalDarciRoles,
       generated_sections: generatedSections,
-      timeline: timeline
+      timeline: timeline,
+      is_pinned: false, // Default value for new PRDs
+      last_viewed_at: new Date() // Set initial view time
     };
     
     console.log('Creating PRD with data structure:', Object.keys(prdData));
-    console.log('Document owners for DB:', prdData.document_owners);
-    console.log('Developers for DB:', prdData.developers);
-    console.log('Timeline data type:', Array.isArray(prdData.timeline) ? 'array' : typeof prdData.timeline);
-    console.log('Generated sections data type:', typeof prdData.generated_sections);
     
     try {
       const newPRD = await PRD.create(prdData);
@@ -272,6 +360,7 @@ const updatePRD = async (req, res) => {
     const {
       product_name,
       document_version,
+      document_stage,
       project_overview,
       start_date,
       end_date,
@@ -280,14 +369,22 @@ const updatePRD = async (req, res) => {
       stakeholders,
       darci_roles,
       generated_sections,
-      timeline
+      timeline,
+      is_pinned
     } = req.body;
     
     // Prepare update data
     const updateData = {
-      document_stage: 'inprogress', // Update stage to inprogress when editing
       updated_at: new Date()
     };
+    
+    // Allow explicit document_stage setting, otherwise default behavior
+    if (document_stage !== undefined) {
+      updateData.document_stage = document_stage;
+    } else if (existingPrd.document_stage === 'draft') {
+      // Auto-progress from draft to inprogress on first edit
+      updateData.document_stage = 'inprogress';
+    }
     
     // Only update fields that are provided
     if (product_name !== undefined) updateData.product_name = product_name;
@@ -301,32 +398,125 @@ const updatePRD = async (req, res) => {
     if (darci_roles !== undefined) updateData.darci_roles = darci_roles;
     if (generated_sections !== undefined) updateData.generated_sections = generated_sections;
     if (timeline !== undefined) updateData.timeline = timeline;
+    if (is_pinned !== undefined) updateData.is_pinned = is_pinned;
     
     console.log('Update data prepared:', Object.keys(updateData));
     
     // Update the PRD (no Flask API calls - pure manual editing)
-    await PRD.update(updateData, {
-      where: { 
-        id: prdId,
-        user_id: userId 
-      }
-    });
-    
-    // Fetch the updated PRD
-    const updatedPrd = await PRD.findByPk(prdId);
+    await existingPrd.update(updateData);
     
     console.log('PRD updated successfully');
     
     return res.status(200).json({
       status: 'success',
       message: 'PRD updated successfully',
-      data: updatedPrd
+      data: existingPrd
     });
   } catch (err) {
     console.error('Error updating PRD:', err);
     return res.status(500).json({
       status: 'error',
       message: 'Failed to update PRD',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+};
+
+// Toggle PRD pinned status
+const togglePinPRD = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const prdId = req.params.id;
+    
+    // Find the PRD
+    const prd = await PRD.findOne({
+      where: { 
+        id: prdId,
+        user_id: userId 
+      }
+    });
+    
+    if (!prd) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'PRD not found'
+      });
+    }
+    
+    // Toggle is_pinned status
+    const newPinnedStatus = !prd.is_pinned;
+    
+    await prd.update({ is_pinned: newPinnedStatus });
+    
+    return res.status(200).json({
+      status: 'success',
+      message: newPinnedStatus 
+        ? 'PRD pinned successfully' 
+        : 'PRD unpinned successfully',
+      data: {
+        id: prd.id,
+        is_pinned: newPinnedStatus
+      }
+    });
+  } catch (err) {
+    console.error('Error toggling PRD pin status:', err);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to update PRD pin status',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+};
+
+// Update PRD document stage
+const updatePRDStage = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const prdId = req.params.id;
+    const { document_stage } = req.body;
+    
+    // Validate stage value
+    const validStages = ['draft', 'inprogress', 'finished', 'archived'];
+    if (!validStages.includes(document_stage)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid document stage value'
+      });
+    }
+    
+    // Find the PRD
+    const prd = await PRD.findOne({
+      where: { 
+        id: prdId,
+        user_id: userId 
+      }
+    });
+    
+    if (!prd) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'PRD not found'
+      });
+    }
+    
+    await prd.update({ 
+      document_stage,
+      updated_at: new Date()
+    });
+    
+    return res.status(200).json({
+      status: 'success',
+      message: `PRD stage updated to ${document_stage}`,
+      data: {
+        id: prd.id,
+        document_stage
+      }
+    });
+  } catch (err) {
+    console.error('Error updating PRD stage:', err);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to update PRD stage',
       error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   }
@@ -356,12 +546,7 @@ const deletePRD = async (req, res) => {
     }
     
     // Delete the PRD
-    await PRD.destroy({
-      where: { 
-        id: prdId,
-        user_id: userId 
-      }
-    });
+    await prd.destroy();
     
     console.log(`PRD ${prdId} deleted successfully`);
     
@@ -379,61 +564,15 @@ const deletePRD = async (req, res) => {
   }
 };
 
-// Archive PRD
+// Archive PRD - Simplified to use updatePRDStage
 const archivePRD = async (req, res) => {
   try {
     const userId = req.user.id;
     const prdId = req.params.id;
     
-    console.log(`Attempting to archive PRD ${prdId} for user ${userId}`);
+    req.body.document_stage = 'archived';
+    return await updatePRDStage(req, res);
     
-    // Find the PRD first
-    const prd = await PRD.findOne({
-      where: { 
-        id: prdId,
-        user_id: userId 
-      }
-    });
-    
-    if (!prd) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'PRD not found'
-      });
-    }
-    
-    // Check if already archived
-    if (prd.document_stage === 'archived') {
-      return res.status(400).json({
-        status: 'error',
-        message: 'PRD is already archived'
-      });
-    }
-    
-    // Update document stage to archived
-    await PRD.update(
-      { 
-        document_stage: 'archived',
-        updated_at: new Date()
-      },
-      {
-        where: { 
-          id: prdId,
-          user_id: userId 
-        }
-      }
-    );
-    
-    // Fetch the updated PRD
-    const archivedPrd = await PRD.findByPk(prdId);
-    
-    console.log(`PRD ${prdId} archived successfully`);
-    
-    return res.status(200).json({
-      status: 'success',
-      message: 'PRD archived successfully',
-      data: archivedPrd
-    });
   } catch (err) {
     console.error('Error archiving PRD:', err);
     return res.status(500).json({
@@ -449,6 +588,7 @@ const downloadPRD = async (req, res) => {
   try {
     const userId = req.user.id;
     const prdId = req.params.id;
+    const { update_stage = true } = req.query; // Option to not change stage
     
     console.log(`Starting PDF download for PRD ${prdId} by user ${userId}`);
     
@@ -469,20 +609,12 @@ const downloadPRD = async (req, res) => {
     
     console.log('PRD found, current stage:', prd.document_stage);
     
-    // Update document stage to 'finished' when downloading
-    if (prd.document_stage !== 'finished') {
-      await PRD.update(
-        { 
-          document_stage: 'finished',
-          updated_at: new Date()
-        },
-        {
-          where: { 
-            id: prdId,
-            user_id: userId 
-          }
-        }
-      );
+    // Update document stage to 'finished' when downloading, if requested
+    if (update_stage && prd.document_stage !== 'finished' && prd.document_stage !== 'archived') {
+      await prd.update({ 
+        document_stage: 'finished',
+        updated_at: new Date()
+      });
       console.log('PRD stage updated to finished');
     }
     
@@ -526,12 +658,66 @@ const downloadPRD = async (req, res) => {
   }
 };
 
+// Get dashboard stats
+const getDashboardStats = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Get counts for different PRD stages
+    const [totalDraft, totalInProgress, totalFinished, totalArchived] = await Promise.all([
+      PRD.count({ where: { user_id: userId, document_stage: 'draft' } }),
+      PRD.count({ where: { user_id: userId, document_stage: 'inprogress' } }),
+      PRD.count({ where: { user_id: userId, document_stage: 'finished' } }),
+      PRD.count({ where: { user_id: userId, document_stage: 'archived' } })
+    ]);
+    
+    // Get total PRDs
+    const totalPRD = totalDraft + totalInProgress + totalFinished + totalArchived;
+    
+    // Get recent PRDs (last 5)
+    const recentPRDs = await PRD.findAll({
+      where: { user_id: userId },
+      order: [['updated_at', 'DESC']],
+      limit: 5,
+      attributes: [
+        'id', 'product_name', 'document_stage', 
+        'updated_at', 'is_pinned', 'last_viewed_at'
+      ]
+    });
+    
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        counts: {
+          totalPRD,
+          totalDraft,
+          totalInProgress,
+          totalFinished,
+          totalArchived
+        },
+        recentPRDs
+      }
+    });
+  } catch (err) {
+    console.error('Error getting dashboard data:', err);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to get dashboard statistics',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+};
+
 module.exports = {
   getAllPRDs,
+  getRecentPRDs,
   getPRDById,
   createPRD,
   updatePRD,
+  togglePinPRD,
+  updatePRDStage,
   deletePRD,
   archivePRD,
-  downloadPRD
+  downloadPRD,
+  getDashboardStats
 };

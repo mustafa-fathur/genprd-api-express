@@ -10,4 +10,8 @@ router.delete('/:id', prdController.deletePRD);
 router.patch('/:id/archive', prdController.archivePRD);
 router.get('/:id/download', prdController.downloadPRD);
 
+router.get('/recent', prdController.getRecentPRDs);
+router.patch('/:id/pin', prdController.togglePinPRD);
+router.patch('/:id/stage', prdController.updatePRDStage);
+
 module.exports = router;

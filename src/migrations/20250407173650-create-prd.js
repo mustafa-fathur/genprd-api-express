@@ -69,6 +69,15 @@ module.exports = {
         type: Sequelize.JSON,
         allowNull: true,
       },
+      is_pinned: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
+      last_viewed_at: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
