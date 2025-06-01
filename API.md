@@ -24,15 +24,17 @@ https://express-backend-418864732285.asia-southeast2.run.app/api
 
 ### Google OAuth
 
-#### GET /api/auth/google
+#### Web Authentication
 
-Initiates Google OAuth authentication flow.
+#### GET /api/auth/web/google
+
+Initiates Google OAuth authentication flow for web clients.
 
 **Response:** Redirects to Google authentication page.
 
-#### GET /api/auth/google/callback
+#### GET /api/auth/web/google/callback
 
-Callback endpoint for Google OAuth authentication.
+Callback endpoint for Google OAuth web authentication.
 
 **Response:**
 
@@ -52,6 +54,34 @@ Callback endpoint for Google OAuth authentication.
   }
 }
 ```
+
+#### Mobile Authentication
+
+#### GET /api/auth/mobile/google
+
+Initiates Google OAuth authentication flow for mobile clients.
+
+**Response:** Redirects to Google authentication page.
+
+#### GET /api/auth/mobile/google/callback
+
+Callback endpoint for Google OAuth mobile authentication.
+
+**Response:** Similar to web callback response.
+
+#### POST /api/auth/verify-google-token
+
+Verifies a Google token from mobile authentication.
+
+**Request Body:**
+
+```json
+{
+  "token": "google-token-string"
+}
+```
+
+**Response:** Authentication response with JWT token.
 
 ### Refresh Token
 
@@ -468,6 +498,39 @@ Authorization: Bearer jwt-token-string
 }
 ```
 
+### Get Recent PRDs
+
+#### GET /api/prd/recent
+
+Retrieves a list of recent PRD records for the authenticated user.
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": "prd-id-1",
+      "user_id": "user-id",
+      "product_name": "TaskMaster Pro",
+      "document_version": "1.0",
+      "document_stage": "draft",
+      "created_at": "2025-05-23T00:00:00.000Z",
+      "updated_at": "2025-05-23T00:00:00.000Z"
+    }
+  ]
+}
+```
+
 ### Get PRD by ID
 
 #### GET /api/prd/:id
@@ -785,15 +848,34 @@ Authorization: Bearer jwt-token-string
 
 - 404 Not Found - PRD with specified ID does not exist
 - 400 Bad Request - PRD is already archived
-- 500 Internal Server Error - Server error while processing the request
+
+### Toggle Pin PRD
+
+#### PATCH /api/prd/:id/pin
+
+Toggles the pinned status of a PRD.
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**URL Parameters:**
+
+- `id` - The ID of the PRD to pin/unpin
+
+**Response:**
 
 ```json
 {
   "status": "success",
-  "message": "PRD archived successfully",
+  "message": "PRD pinned successfully",
   "data": {
     "id": "prd-id",
-    "document_stage": "archived",
+    "is_pinned": true,
     "updated_at": "2025-05-23T00:00:00.000Z"
   }
 }
@@ -802,7 +884,51 @@ Authorization: Bearer jwt-token-string
 **Error Responses:**
 
 - 404 Not Found - PRD with specified ID does not exist
-- 400 Bad Request - PRD is already archived
+
+### Update PRD Stage
+
+#### PATCH /api/prd/:id/stage
+
+Updates the document stage of a PRD.
+
+**Authentication Required:** Yes (JWT Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer jwt-token-string
+```
+
+**URL Parameters:**
+
+- `id` - The ID of the PRD to update
+
+**Request Body:**
+
+```json
+{
+  "stage": "inprogress"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "PRD stage updated successfully",
+  "data": {
+    "id": "prd-id",
+    "document_stage": "inprogress",
+    "updated_at": "2025-05-23T00:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+
+- 404 Not Found - PRD with specified ID does not exist
+- 400 Bad Request - Invalid stage value
 
 ### Download PRD as PDF
 
@@ -907,7 +1033,7 @@ All endpoints may return the following error responses:
 
 ## Authentication Requirements
 
-All endpoints except `/api/auth/google` and `/api/auth/google/callback` require authentication via a JWT token in the Authorization header:
+All endpoints except authentication endpoints require authentication via a JWT token in the Authorization header:
 
 ```
 Authorization: Bearer jwt-token-string
