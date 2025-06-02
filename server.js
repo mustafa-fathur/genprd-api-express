@@ -8,8 +8,8 @@ const routes = require('./src/routes');
 // Konfigurasi CORS untuk mengizinkan request dari aplikasi mobile
 app.use(cors({
   origin: '*', // Untuk development, lebih baik spesifikasikan origin yang diizinkan di production
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
   credentials: true
 }));
 app.use(express.json());

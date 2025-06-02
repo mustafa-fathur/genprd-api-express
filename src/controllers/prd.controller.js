@@ -570,9 +570,38 @@ const archivePRD = async (req, res) => {
     const userId = req.user.id;
     const prdId = req.params.id;
     
-    req.body.document_stage = 'archived';
-    return await updatePRDStage(req, res);
+    // Find the PRD
+    const prd = await PRD.findOne({
+      where: { 
+        id: prdId,
+        user_id: userId 
+      }
+    });
     
+    if (!prd) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'PRD not found'
+      });
+    }
+    
+    // Check if it's already archived, if so, unarchive it
+    const newStage = prd.document_stage === 'archived' ? 'draft' : 'archived';
+    
+    // Update the PRD directly
+    await prd.update({ 
+      document_stage: newStage,
+      updated_at: new Date()
+    });
+    
+    return res.status(200).json({
+      status: 'success',
+      message: newStage === 'archived' ? 'PRD archived successfully' : 'PRD unarchived successfully',
+      data: {
+        id: prd.id,
+        document_stage: newStage
+      }
+    });
   } catch (err) {
     console.error('Error archiving PRD:', err);
     return res.status(500).json({
