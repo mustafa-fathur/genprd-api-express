@@ -5,12 +5,18 @@ const cors = require('cors');
 const port = process.env.PORT || 8080;
 const routes = require('./src/routes');
 
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log('Headers:', req.headers);
+  next();
+});
+
 // Konfigurasi CORS untuk mengizinkan request dari aplikasi mobile
 app.use(cors({
-  origin: '*', // Untuk development, lebih baik spesifikasikan origin yang diizinkan di production
+  origin: '*',
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -8,20 +8,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
         :root {
-            --primary: #1e40af;
-            --primary-light: #3b82f6;
-            --secondary: #475569;
-            --text: #0f172a;
-            --text-light: #374151;
-            --text-muted: #6b7280;
-            --border: #d1d5db;
-            --border-light: #e5e7eb;
-            --background: #ffffff;
-            --background-light: #f9fafb;
-            --success: #059669;
-            --warning: #d97706;
-            --danger: #dc2626;
-            --timeline-line: #cbd5e1;
+            --primary: #1f2937; /* Dark Gray */
+            --primary-light: #4b5563; /* Slightly lighter dark gray */
+            --secondary: #374151; /* Used for subtitle */
+            --text: #111827; /* Very dark gray for main text */
+            --text-light: #4b5563; /* Lighter gray for secondary text */
+            --text-muted: #6b7280; /* Muted gray */
+            --border: #d1d5db; /* Standard border color */
+            --border-light: #e5e7eb; /* Lighter border */
+            --background: #ffffff; /* White background */
+            --background-light: #f9fafb; /* Very light gray background */
+            --success: #10b981; /* Green */
+            --warning: #f59e0b; /* Amber */
+            --danger: #ef4444; /* Red */
+            --timeline-line: #d1d5db; /* Timeline line color */
         }
 
         * {
@@ -31,244 +31,248 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             color: var(--text);
-            line-height: 1.5;
-            font-size: 12px;
+            line-height: 1.6; /* Increased line height for readability */
+            font-size: 11px; /* Slightly smaller base font */
             background: white;
         }
 
         .document {
             max-width: 100%;
             margin: 0;
-            padding: 15mm;
+            padding: 25mm 18mm; /* Increased padding for spacious layout */
             background: white;
         }
 
         /* Header */
         .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 25px;
-            border-bottom: 3px solid var(--primary);
+            text-align: left;
+            margin-bottom: 40px;
+            padding-bottom: 20px; /* Adjusted padding */
+            border-bottom: 1px solid var(--border-light); /* Subtle border */
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 26px; /* Title font size */
             font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 8px;
+            color: var(--text);
+            margin-bottom: 6px; /* Adjusted margin */
             line-height: 1.2;
         }
 
         .header .subtitle {
-            font-size: 16px;
+            font-size: 15px; /* Subtitle font size */
             color: var(--secondary);
             font-weight: 500;
-            margin-bottom: 10px;
+            margin-bottom: 8px; /* Adjusted margin */
         }
 
         .header .meta {
-            font-size: 12px;
+            font-size: 10px; /* Meta font size */
             color: var(--text-muted);
         }
 
-        /* Document Info Grid - Two Columns */
+        /* Document Info Grid */
         .doc-info {
-            background: var(--background-light);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border-light);
+            margin-bottom: 40px; /* Increased margin */
         }
 
         .info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Flexible columns */
+            gap: 25px; /* Increased gap */
+            padding-bottom: 25px; /* Increased padding */
+            border-bottom: 1px solid var(--border-light); /* Subtle border */
         }
 
         .info-item {
-            min-height: 40px;
+             /* No min-height needed */
         }
 
         .info-label {
             font-weight: 600;
             color: var(--text-light);
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 4px;
         }
 
         .info-value {
-            font-weight: 500;
+            font-weight: 400;
             color: var(--text);
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 11px;
+            line-height: 1.5;
         }
 
         .project-overview {
-            grid-column: span 2;
-            margin-top: 10px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border);
+            grid-column: span all; /* Span all columns */
+            margin-top: 20px; /* Increased margin */
+            padding-top: 20px; /* Increased padding */
+            border-top: 1px solid var(--border-light); /* Subtle border */
         }
 
         /* Section Styling */
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 40px; /* Increased margin between sections */
             page-break-inside: avoid;
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 18px; /* Section title size */
             font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--border);
+            color: var(--text);
+            margin-bottom: 20px; /* Increased margin */
+            padding-bottom: 10px; /* Adjusted padding */
+            border-bottom: 1px solid var(--border-light); /* Subtle border */
         }
 
         .subsection-title {
-            font-size: 14px;
+            font-size: 14px; /* Subsection title size */
             font-weight: 600;
-            color: var(--primary-light);
-            margin: 18px 0 10px 0;
+            color: var(--secondary); /* Use secondary color */
+            margin: 20px 0 10px 0; /* Adjusted margins */
         }
 
         .content {
-            margin-bottom: 15px;
-            text-align: justify;
+            margin-bottom: 15px; /* Consistent margin */
+            text-align: left;
             line-height: 1.6;
-            font-size: 12px;
+            font-size: 11px; /* Content font size */
         }
 
         /* Tables */
         .table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 11px;
+            margin: 20px 0; /* Adjusted margin */
+            font-size: 10px; /* Table font size */
             page-break-inside: avoid;
+             border: 1px solid var(--border);
+             /* Removed outer border */
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 15px; /* Increased padding */
+            border: 1px solid var(--border-light); /* Subtle inner borders */
+            vertical-align: top;
+            line-height: 1.5;
+            text-align: left;
         }
 
         .table th {
-            background-color: var(--primary);
-            color: white;
-            padding: 12px 8px;
-            text-align: left;
+            background-color: var(--background-light); /* Light background */
+            color: var(--text-light); /* Darker text for headers */
             font-weight: 600;
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .table td {
-            padding: 10px 8px;
-            border-bottom: 1px solid var(--border);
-            vertical-align: top;
-            line-height: 1.5;
-        }
-
         .table tr:nth-child(even) {
-            background-color: var(--background-light);
+            background-color: var(--background-light); /* Alternating row background */
         }
+        
+         .table tr:nth-child(odd) {
+             background-color: var(--background); /* Explicitly set odd row background */
+         }
 
         .table .role-name {
             font-weight: 600;
             text-transform: capitalize;
-            color: var(--primary);
-            min-width: 90px;
+            color: var(--text);
+            min-width: 100px; /* Adjusted min width */
         }
 
         /* Timeline Roadmap Style */
         .timeline {
-            margin: 20px 0;
+            margin: 30px 0; /* Increased margin */
             position: relative;
+            padding-left: 20px; /* Adjusted padding */
         }
 
         .timeline::before {
             content: '';
             position: absolute;
-            left: 20px;
+            left: 20px; /* Aligned with padding */
             top: 0;
             bottom: 0;
-            width: 2px;
-            background: var(--timeline-line);
+            width: 1px;
+            background: var(--border-light); /* Subtle line */
         }
 
         .timeline-item {
             position: relative;
-            margin-bottom: 20px;
-            padding-left: 50px;
+            margin-bottom: 25px; /* Increased margin */
+            padding-left: 40px; /* Adjusted padding */
             page-break-inside: avoid;
         }
 
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: 14px;
-            top: 8px;
-            width: 14px;
-            height: 14px;
-            background: var(--primary);
+            left: 17px; /* Adjusted position */
+            top: 8px; /* Adjusted position */
+            width: 7px; /* Smaller circle */
+            height: 7px;
+            background: var(--primary); /* Primary color */
             border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px var(--primary);
+            border: 2px solid white;
+            box-shadow: 0 0 0 1px var(--primary);
         }
 
         .timeline-content {
             background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light); /* Subtle border */
+            border-radius: 4px;
+            padding: 15px; /* Adjusted padding */
+            box-shadow: none;
         }
 
         .timeline-period {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 12px;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 10px; /* Adjusted font size */
+            margin-bottom: 4px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .timeline-activity {
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-size: 11px; /* Adjusted font size */
             color: var(--text);
         }
 
         .timeline-pic {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
-            font-style: italic;
+            font-style: normal;
         }
 
         /* Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Adjusted min width */
+            gap: 25px; /* Increased gap */
             margin: 20px 0;
         }
 
         .metric-card {
             background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            border: 1px solid var(--border-light); /* Subtle border */
+            border-radius: 4px;
             padding: 15px;
             page-break-inside: avoid;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
         }
 
         .metric-name {
             font-weight: 600;
-            color: var(--primary);
+            color: var(--text);
             font-size: 12px;
             margin-bottom: 8px;
             line-height: 1.3;
@@ -284,13 +288,18 @@
         .metric-values {
             display: flex;
             justify-content: space-between;
-            padding-top: 8px;
-            border-top: 1px dashed var(--border);
+            padding-top: 10px; /* Increased padding */
+            border-top: 1px solid var(--border-light); /* Subtle border */
         }
 
         .metric-value-item {
-            text-align: center;
+            text-align: left;
             flex: 1;
+            padding-right: 15px; /* Increased padding */
+        }
+
+        .metric-value-item:last-child {
+             padding-right: 0;
         }
 
         .metric-value-label {
@@ -315,77 +324,77 @@
         .stories-container {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 25px; /* Increased gap */
             margin: 20px 0;
         }
 
         .story-card {
             background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
+            border: 1px solid var(--border-light); /* Subtle border */
+            border-radius: 4px;
+            padding: 15px; /* Adjusted padding */
             page-break-inside: avoid;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
         }
 
         .story-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
-            gap: 10px;
+            margin-bottom: 12px; /* Adjusted margin */
+            gap: 20px; /* Increased gap */
         }
 
         .story-title {
             font-weight: 600;
             font-size: 13px;
             flex: 1;
-            line-height: 1.3;
+            line-height: 1.5; /* Adjusted line height */
             color: var(--text);
         }
 
         .priority-badge {
             font-size: 9px;
             font-weight: 600;
-            padding: 4px 8px;
-            border-radius: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             white-space: nowrap;
         }
 
         .priority-high {
-            background-color: rgba(220, 38, 38, 0.1);
+            background-color: rgba(239, 68, 68, 0.1);
             color: var(--danger);
-            border: 1px solid rgba(220, 38, 38, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         .priority-medium {
-            background-color: rgba(217, 119, 6, 0.1);
+            background-color: rgba(245, 158, 11, 0.1);
             color: var(--warning);
-            border: 1px solid rgba(217, 119, 6, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.2);
         }
 
         .priority-low {
-            background-color: rgba(5, 150, 105, 0.1);
+            background-color: rgba(16, 185, 129, 0.1);
             color: var(--success);
-            border: 1px solid rgba(5, 150, 105, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
         .story-text {
-            font-style: italic;
-            margin-bottom: 10px;
+            font-style: normal;
+            margin-bottom: 12px; /* Adjusted margin */
             font-size: 11px;
-            line-height: 1.5;
+            line-height: 1.6; /* Adjusted line height */
             color: var(--text-light);
         }
 
         .acceptance-criteria {
             background-color: var(--background-light);
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px; /* Adjusted padding */
+            border-radius: 4px;
             font-size: 10px;
-            border-left: 3px solid var(--primary);
+            border-left: 3px solid var(--primary-light); /* Use primary-light for accent */
         }
 
         .acceptance-criteria-label {
@@ -399,13 +408,18 @@
             color: var(--text);
         }
 
+        /* Custom Sections */
+        .custom-section-content .content {
+             margin-bottom: 0;
+        }
+
         /* Footer */
         .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
+            margin-top: 50px; /* Increased margin */
+            padding-top: 25px; /* Increased padding */
+            border-top: 1px solid var(--border-light); /* Subtle border */
             text-align: center;
-            font-size: 10px;
+            font-size: 9px; /* Smaller footer font */
             color: var(--text-muted);
         }
 
@@ -415,7 +429,7 @@
         }
 
         .no-break {
-            page-break-inside: avoid;
+            page-break-inside: avoid !important;
         }
 
         /* Overview sections */
@@ -425,28 +439,43 @@
         }
 
         .overview-section .subsection-title {
-            margin-top: 10px;
-            margin-bottom: 8px;
+            margin-top: 15px; /* Adjusted margin */
+            margin-bottom: 8px; /* Adjusted margin */
         }
 
         /* Responsive adjustments */
         @media print {
             .document {
-                margin: 0;
-                padding: 12mm;
+                padding: 18mm 12mm;
             }
-            
+
             .section {
                 margin-bottom: 25px;
             }
-            
+
+             .info-grid,
+             .project-overview {
+                 page-break-inside: avoid;
+             }
+
             .metrics-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Adjusted print min width */
             }
-            
+
             .info-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
+                grid-template-columns: 1fr 1fr; /* Revert to 2 columns for print */
+                gap: 15px;
+            }
+
+            .project-overview {
+                grid-column: span 2;
+                margin-top: 15px;
+                padding-top: 15px;
+            }
+
+            .table th,
+            .table td {
+                padding: 10px 12px;
             }
 
             .timeline::before {
@@ -456,6 +485,28 @@
             .timeline-item::before {
                 print-color-adjust: exact;
             }
+
+            .priority-badge {
+                 print-color-adjust: exact;
+            }
+
+             /* Ensure background colors print */
+            .table tr:nth-child(even) {
+                background-color: var(--background-light) !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+             .table tr:nth-child(odd) {
+                background-color: var(--background) !important;
+                 -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .acceptance-criteria {
+                background-color: var(--background-light) !important;
+                 -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+
         }
     </style>
 </head>
@@ -465,10 +516,10 @@
         <div class="header">
             <h1>{{product_name}}</h1>
             <div class="subtitle">Product Requirements Document</div>
-            <div class="meta">Version {{document_version}} • Created {{formatDate 'now'}}</div>
+            <div class="meta">Version {{document_version}} • Created {{formatDate created_at}}</div>
         </div>
 
-        <!-- Document Information - Two Columns -->
+        <!-- Document Information - Adjusted to flexible grid -->
         <div class="doc-info">
             <div class="info-grid">
                 <div class="info-item">
@@ -479,13 +530,21 @@
                     <div class="info-label">Document Owners</div>
                     <div class="info-value">{{joinArray document_owners}}</div>
                 </div>
-                <div class="info-item">
+                 <div class="info-item">
                     <div class="info-label">Development Team</div>
                     <div class="info-value">{{joinArray developers}}</div>
                 </div>
-                <div class="info-item">
+                 <div class="info-item">
                     <div class="info-label">Stakeholders</div>
                     <div class="info-value">{{joinArray stakeholders}}</div>
+                </div>
+                 <div class="info-item">
+                    <div class="info-label">Document Stage</div>
+                    <div class="info-value">{{capitalize document_stage}}</div>
+                </div>
+                 <div class="info-item">
+                    <div class="info-label">Last Updated</div>
+                    <div class="info-value">{{formatDate updated_at}}</div>
                 </div>
                 <div class="info-item project-overview">
                     <div class="info-label">Project Overview</div>
@@ -494,24 +553,24 @@
             </div>
         </div>
 
-        {{#if generated_sections.overview}}
-        <!-- Project Overview -->
+        {{#if generated_sections.overview.sections}}
+        <!-- Project Overview (Generated) -->
         <div class="section">
             <h2 class="section-title">Project Overview</h2>
             {{#each generated_sections.overview.sections}}
-            <div class="overview-section">
+            <div class="overview-section no-break">
                 <div class="subsection-title">{{this.title}}</div>
-                <div class="content">{{this.content}}</div>
+                <div class="content">{{{this.content}}}</div>
             </div>
             {{/each}}
         </div>
         {{/if}}
 
-        {{#if generated_sections.darci}}
+        {{#if generated_sections.darci.roles}}
         <!-- DARCI Matrix -->
         <div class="section no-break">
             <h2 class="section-title">DARCI Responsibility Matrix</h2>
-            <table class="table">
+            <table class="table no-break">
                 <thead>
                     <tr>
                         <th style="width: 100px;">Role</th>
@@ -522,7 +581,7 @@
                 <tbody>
                     {{#each generated_sections.darci.roles}}
                     <tr>
-                        <td class="role-name">{{this.name}}</td>
+                        <td class="role-name">{{capitalize this.name}}</td>
                         <td>{{joinArray this.members}}</td>
                         <td>{{this.guidelines}}</td>
                     </tr>
@@ -532,17 +591,21 @@
         </div>
         {{/if}}
 
-        {{#if generated_sections.project_timeline}}
-        <!-- Project Timeline -->
-        <div class="section">
-            <h2 class="section-title">Project Timeline & Roadmap</h2>
-            <div class="timeline">
-                {{#each generated_sections.project_timeline.phases}}
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-period">{{this.time_period}}</div>
-                        <div class="timeline-activity">{{this.activity}}</div>
-                        <div class="timeline-pic">Responsible: {{this.pic}}</div>
+        {{#if generated_sections.user_stories.stories}}
+        <!-- User Stories -->
+        <div class="section page-break">
+            <h2 class="section-title">User Stories & Requirements</h2>
+            <div class="stories-container">
+                {{#each generated_sections.user_stories.stories}}
+                <div class="story-card no-break">
+                    <div class="story-header">
+                        <div class="story-title">{{this.title}}</div>
+                        <span class="priority-badge priority-{{this.priority}}">{{priority this.priority}}</span>
+                    </div>
+                    <div class="story-text">{{{this.user_story}}}</div>
+                    <div class="acceptance-criteria no-break">
+                        <div class="acceptance-criteria-label">Acceptance Criteria:</div>
+                        <div class="acceptance-criteria-text">{{{this.acceptance_criteria}}}</div>
                     </div>
                 </div>
                 {{/each}}
@@ -550,15 +613,15 @@
         </div>
         {{/if}}
 
-        {{#if generated_sections.success_metrics}}
+         {{#if generated_sections.success_metrics.metrics}}
         <!-- Success Metrics -->
         <div class="section">
             <h2 class="section-title">Success Metrics & KPIs</h2>
             <div class="metrics-grid">
                 {{#each generated_sections.success_metrics.metrics}}
-                <div class="metric-card">
+                <div class="metric-card no-break">
                     <div class="metric-name">{{this.name}}</div>
-                    <div class="metric-definition">{{this.definition}}</div>
+                    <div class="metric-definition">{{{this.definition}}}</div>
                     <div class="metric-values">
                         <div class="metric-value-item">
                             <div class="metric-value-label">Current</div>
@@ -575,26 +638,66 @@
         </div>
         {{/if}}
 
-        {{#if generated_sections.user_stories}}
-        <!-- User Stories -->
-        <div class="section page-break">
-            <h2 class="section-title">User Stories & Requirements</h2>
-            <div class="stories-container">
-                {{#each generated_sections.user_stories.stories}}
-                <div class="story-card">
-                    <div class="story-header">
-                        <div class="story-title">{{this.title}}</div>
-                        <span class="priority-badge priority-{{this.priority}}">{{this.priority}}</span>
-                    </div>
-                    <div class="story-text">{{this.user_story}}</div>
-                    <div class="acceptance-criteria">
-                        <div class="acceptance-criteria-label">Acceptance Criteria:</div>
-                        <div class="acceptance-criteria-text">{{this.acceptance_criteria}}</div>
+        {{#if generated_sections.project_timeline.phases}}
+        <!-- Project Timeline -->
+        <div class="section">
+            <h2 class="section-title">Project Timeline & Roadmap</h2>
+            <div class="timeline">
+                {{#each generated_sections.project_timeline.phases}}
+                <div class="timeline-item no-break">
+                    <div class="timeline-content no-break">
+                        <div class="timeline-period">{{formatTimelinePeriod this.time_period}}</div>
+                        <div class="timeline-activity">{{this.activity}}</div>
+                        <div class="timeline-pic">Responsible: {{this.pic}}</div>
                     </div>
                 </div>
                 {{/each}}
             </div>
         </div>
+        {{/if}}
+
+
+        {{#if generated_sections.custom_sections.sections}}
+        <!-- Custom Sections -->
+        {{#each generated_sections.custom_sections.sections}}
+        <div class="section">
+             <h2 class="section-title">{{this.title}}</h2>
+             <div class="custom-section-content no-break">
+                {{#if (eq this.layout 'text')}}
+                    <div class="content">{{{this.content}}}</div>
+                {{else if (eq this.layout 'table')}}
+                    <table class="table no-break">
+                        {{#if this.content}}
+                            {{#with this.content.[0] as |headerRow|}}
+                                {{#if headerRow}}
+                                    <thead>
+                                        <tr>
+                                            {{#each headerRow}}
+                                                <th>{{{this}}}</th>
+                                            {{/each}}
+                                        </tr>
+                                    </thead>
+                                {{/if}}
+                            {{/with}}
+                            <tbody>
+                                {{#each this.content}}
+                                    {{#unless @first}}
+                                        <tr>
+                                            {{#each this}}
+                                                <td>{{{this}}}</td>
+                                            {{/each}}
+                                        </tr>
+                                    {{/unless}}
+                                {{/each}}
+                            </tbody>
+                        {{/if}}
+                    </table>
+                {{else}}
+                    <div class="content">Custom section layout not supported: {{this.layout}}</div>
+                {{/if}}
+             </div>
+        </div>
+        {{/each}}
         {{/if}}
 
         <!-- Footer -->

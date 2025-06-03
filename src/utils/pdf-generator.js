@@ -116,6 +116,22 @@ Handlebars.registerHelper('capitalize', function(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 });
 
+// Register new helper for equality comparison
+Handlebars.registerHelper('eq', function(arg1, arg2) {
+  return (arg1 === arg2);
+});
+
+// Register new helper for inequality comparison
+Handlebars.registerHelper('differentiated from', function(arg1, arg2) {
+    return (arg1 !== arg2);
+});
+
+// Register new helper for priority formatting
+Handlebars.registerHelper('priority', function(priority) {
+  if (!priority) return '';
+  return priority.toLowerCase();
+});
+
 /**
  * Generate PDF from PRD data and upload to Google Cloud Storage
  * @param {Object} prdData - The PRD data object

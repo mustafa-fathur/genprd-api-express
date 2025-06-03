@@ -11,7 +11,7 @@ const getAllPRDs = async (req, res) => {
       page = 1, 
       limit = 10, 
       stage, 
-      search, 
+      search,   
       sort = 'updated_at', 
       order = 'DESC',
       all = false // Parameter untuk mengambil semua PRD tanpa pagination
@@ -617,9 +617,9 @@ const downloadPRD = async (req, res) => {
   try {
     const userId = req.user.id;
     const prdId = req.params.id;
-    const { update_stage = true } = req.query; // Option to not change stage
+    const { update_stage = true } = req.query; // Parse as boolean
     
-    console.log(`Starting PDF download for PRD ${prdId} by user ${userId}`);
+    console.log(`Starting PDF download for PRD ${prdId} by user ${userId}, update_stage=${update_stage}`);
     
     // Find the PRD
     const prd = await PRD.findOne({
@@ -639,18 +639,29 @@ const downloadPRD = async (req, res) => {
     console.log('PRD found, current stage:', prd.document_stage);
     
     // Update document stage to 'finished' when downloading, if requested
-    if (update_stage && prd.document_stage !== 'finished' && prd.document_stage !== 'archived') {
+    const shouldUpdateStage = update_stage === 'true';
+    if (shouldUpdateStage && prd.document_stage !== 'finished' && prd.document_stage !== 'archived') {
       await prd.update({ 
         document_stage: 'finished',
         updated_at: new Date()
       });
       console.log('PRD stage updated to finished');
+    } else {
+      console.log('PRD stage remains unchanged:', prd.document_stage);
     }
     
-    // Generate PDF
+    // Generate PDF with timeout and retry
     try {
       console.log('Generating PDF...');
-      const pdfResult = await generatePRDPDF(prd.toJSON());
+      
+      // Add timeout for PDF generation (3 minutes)
+      const pdfPromise = generatePRDPDF(prd.toJSON());
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('PDF generation timeout')), 180000)
+      );
+      
+      // Race between PDF generation and timeout
+      const pdfResult = await Promise.race([pdfPromise, timeoutPromise]);
       
       console.log('PDF generated successfully:', pdfResult.url);
       
@@ -659,21 +670,31 @@ const downloadPRD = async (req, res) => {
         message: 'PDF generated successfully',
         data: {
           download_url: pdfResult.url,
-          public_url: pdfResult.publicUrl,
+          public_url: pdfResult.publicUrl || pdfResult.url,
           file_name: pdfResult.fileName,
           gcs_path: pdfResult.gcsPath,
           prd_id: prdId,
+          document_stage: prd.document_stage,
           generated_at: new Date().toISOString(),
           expires_at: pdfResult.expiresAt
         }
       });
       
     } catch (pdfError) {
-      console.error('PDF generation error:', pdfError);
+      console.error('PDF generation error details:', pdfError);
+      
+      // Check for specific types of PDF errors
+      let errorMessage = 'Failed to generate PDF';
+      if (pdfError.message.includes('timeout')) {
+        errorMessage = 'PDF generation timed out. The document may be too large.';
+      } else if (pdfError.code === 'ECONNREFUSED') {
+        errorMessage = 'PDF service is currently unavailable';
+      }
+      
       return res.status(500).json({
         status: 'error',
-        message: 'Failed to generate PDF',
-        error: process.env.NODE_ENV === 'development' ? pdfError.message : undefined
+        message: errorMessage,
+        error: process.env.NODE_ENV === 'development' ? pdfError.toString() : undefined
       });
     }
     
@@ -682,7 +703,7 @@ const downloadPRD = async (req, res) => {
     return res.status(500).json({
       status: 'error',
       message: 'Failed to process download request',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+      error: process.env.NODE_ENV === 'development' ? err.toString() : undefined
     });
   }
 };
