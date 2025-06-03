@@ -106,7 +106,7 @@
             line-height: 1.5;
         }
 
-        .project-overview {
+        .project-overview-info {
             grid-column: span all; /* Span all columns */
             margin-top: 20px; /* Increased margin */
             padding-top: 20px; /* Increased padding */
@@ -153,8 +153,7 @@
              /* Removed outer border */
         }
 
-        .table th,
-        .table td {
+        .table th, .table td {
             padding: 12px 15px; /* Increased padding */
             border: 1px solid var(--border-light); /* Subtle inner borders */
             vertical-align: top;
@@ -185,145 +184,44 @@
             color: var(--text);
             min-width: 100px; /* Adjusted min width */
         }
+        
+        .table .metric-name-cell {
+            font-weight: 600;
+            color: var(--text);
+            width: 25%; /* Adjusted width for metric name */
+        }
+        
+        .table .metric-value-cell {
+            width: 10%; /* Adjusted width for metric values */
+             white-space: nowrap; /* Prevent wrapping */
+        }
+        
+        .table .metric-definition-cell {
+             width: 55%; /* Adjusted width for metric definition */
+        }
 
         /* Timeline Roadmap Style */
-        .timeline {
-            margin: 30px 0; /* Increased margin */
-            position: relative;
-            padding-left: 20px; /* Adjusted padding */
+        .timeline-section .table {
+            margin-top: 0; /* Remove top margin if section title already has margin */
         }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 20px; /* Aligned with padding */
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: var(--border-light); /* Subtle line */
+        
+        .timeline-section .table th:first-child {
+             width: 25%; /* Person In Charge */
         }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 25px; /* Increased margin */
-            padding-left: 40px; /* Adjusted padding */
-            page-break-inside: avoid;
+         .timeline-section .table th:nth-child(2) {
+             width: 40%; /* Activity */
         }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 17px; /* Adjusted position */
-            top: 8px; /* Adjusted position */
-            width: 7px; /* Smaller circle */
-            height: 7px;
-            background: var(--primary); /* Primary color */
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 0 1px var(--primary);
-        }
-
-        .timeline-content {
-            background: white;
-            border: 1px solid var(--border-light); /* Subtle border */
-            border-radius: 4px;
-            padding: 15px; /* Adjusted padding */
-            box-shadow: none;
-        }
-
-        .timeline-period {
-            font-weight: 600;
-            color: var(--text-light);
-            font-size: 10px; /* Adjusted font size */
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .timeline-activity {
-            font-weight: 500;
-            margin-bottom: 4px;
-            font-size: 11px; /* Adjusted font size */
-            color: var(--text);
-        }
-
-        .timeline-pic {
-            font-size: 10px;
-            color: var(--text-muted);
-            font-style: normal;
+        .timeline-section .table th:nth-child(3) {
+             width: 35%; /* Time Period */
         }
 
         /* Metrics Grid */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Adjusted min width */
-            gap: 25px; /* Increased gap */
-            margin: 20px 0;
-        }
-
-        .metric-card {
-            background: white;
-            border: 1px solid var(--border-light); /* Subtle border */
-            border-radius: 4px;
-            padding: 15px;
-            page-break-inside: avoid;
-            box-shadow: none;
-        }
-
-        .metric-name {
-            font-weight: 600;
-            color: var(--text);
-            font-size: 12px;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-
-        .metric-definition {
-            font-size: 10px;
-            margin-bottom: 10px;
-            color: var(--text-light);
-            line-height: 1.4;
-        }
-
-        .metric-values {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 10px; /* Increased padding */
-            border-top: 1px solid var(--border-light); /* Subtle border */
-        }
-
-        .metric-value-item {
-            text-align: left;
-            flex: 1;
-            padding-right: 15px; /* Increased padding */
-        }
-
-        .metric-value-item:last-child {
-             padding-right: 0;
-        }
-
-        .metric-value-label {
-            font-size: 9px;
-            color: var(--text-muted);
-            margin-bottom: 3px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .metric-value {
-            font-weight: 600;
-            font-size: 12px;
-            color: var(--text);
-        }
-
-        .target-value {
-            color: var(--success);
-        }
+        /* Removed .metrics-grid and .metric-card styles */
 
         /* User Stories */
         .stories-container {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr; /* Keep as single column */
             gap: 25px; /* Increased gap */
             margin: 20px 0;
         }
@@ -376,9 +274,9 @@
         }
 
         .priority-low {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            background-color: rgba(16, 185, 129, 0.1); /* Adjusted to match standard green */
+            color: var(--success); /* Adjusted to match standard green */
+            border: 1px solid rgba(16, 185, 129, 0.2); /* Adjusted to match standard green */
         }
 
         .story-text {
@@ -454,58 +352,54 @@
             }
 
              .info-grid,
-             .project-overview {
+             .project-overview-info {
                  page-break-inside: avoid;
              }
 
-            .metrics-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Adjusted print min width */
-            }
+             .info-grid {
+                 grid-template-columns: 1fr 1fr; /* Revert to 2 columns for print */
+                 gap: 15px;
+             }
 
-            .info-grid {
-                grid-template-columns: 1fr 1fr; /* Revert to 2 columns for print */
-                gap: 15px;
-            }
+             .project-overview-info {
+                 grid-column: span 2;
+                 margin-top: 15px;
+                 padding-top: 15px;
+             }
 
-            .project-overview {
-                grid-column: span 2;
-                margin-top: 15px;
-                padding-top: 15px;
-            }
+             .table th,
+             .table td {
+                 padding: 10px 12px;
+             }
 
-            .table th,
-            .table td {
-                padding: 10px 12px;
-            }
-
-            .timeline::before {
-                print-color-adjust: exact;
-            }
-
-            .timeline-item::before {
-                print-color-adjust: exact;
-            }
-
-            .priority-badge {
+             .timeline::before {
                  print-color-adjust: exact;
-            }
+             }
 
-             /* Ensure background colors print */
-            .table tr:nth-child(even) {
-                background-color: var(--background-light) !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-             .table tr:nth-child(odd) {
-                background-color: var(--background) !important;
+             .timeline-item::before {
+                 print-color-adjust: exact;
+             }
+
+             .priority-badge {
+                  print-color-adjust: exact;
+             }
+
+              /* Ensure background colors print */
+             .table tr:nth-child(even) {
+                 background-color: var(--background-light) !important;
                  -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .acceptance-criteria {
-                background-color: var(--background-light) !important;
-                 -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
+                 color-adjust: exact;
+             }
+              .table tr:nth-child(odd) {
+                 background-color: var(--background) !important;
+                  -webkit-print-color-adjust: exact;
+                 color-adjust: exact;
+             }
+             .acceptance-criteria {
+                 background-color: var(--background-light) !important;
+                  -webkit-print-color-adjust: exact;
+                 color-adjust: exact;
+             }
 
         }
     </style>
@@ -546,7 +440,7 @@
                     <div class="info-label">Last Updated</div>
                     <div class="info-value">{{formatDate updated_at}}</div>
                 </div>
-                <div class="info-item project-overview">
+                <div class="info-item project-overview-info">
                     <div class="info-label">Project Overview</div>
                     <div class="info-value">{{project_overview}}</div>
                 </div>
@@ -592,112 +486,125 @@
         {{/if}}
 
         {{#if generated_sections.user_stories.stories}}
-        <!-- User Stories -->
+        <!-- User Stories - Changed to Table -->
         <div class="section page-break">
             <h2 class="section-title">User Stories & Requirements</h2>
-            <div class="stories-container">
-                {{#each generated_sections.user_stories.stories}}
-                <div class="story-card no-break">
-                    <div class="story-header">
-                        <div class="story-title">{{this.title}}</div>
-                        <span class="priority-badge priority-{{this.priority}}">{{priority this.priority}}</span>
-                    </div>
-                    <div class="story-text">{{{this.user_story}}}</div>
-                    <div class="acceptance-criteria no-break">
-                        <div class="acceptance-criteria-label">Acceptance Criteria:</div>
-                        <div class="acceptance-criteria-text">{{{this.acceptance_criteria}}}</div>
-                    </div>
-                </div>
-                {{/each}}
-            </div>
+            <table class="table no-break">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Title</th>
+                        <th style="width: 10%;">Priority</th>
+                        <th style="width: 35%;">User Story</th>
+                        <th style="width: 30%;">Acceptance Criteria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each generated_sections.user_stories.stories}}
+                    <tr>
+                        <td>{{this.title}}</td>
+                        <td>
+                            <span class="priority-badge priority-{{this.priority}}">{{priority this.priority}}</span>
+                        </td>
+                        <td>{{{this.user_story}}}</td>
+                        <td>{{{this.acceptance_criteria}}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </div>
         {{/if}}
 
-         {{#if generated_sections.success_metrics.metrics}}
+        {{#if generated_sections.success_metrics.metrics}}
         <!-- Success Metrics -->
-        <div class="section">
+        <div class="section page-break">
             <h2 class="section-title">Success Metrics & KPIs</h2>
-            <div class="metrics-grid">
-                {{#each generated_sections.success_metrics.metrics}}
-                <div class="metric-card no-break">
-                    <div class="metric-name">{{this.name}}</div>
-                    <div class="metric-definition">{{{this.definition}}}</div>
-                    <div class="metric-values">
-                        <div class="metric-value-item">
-                            <div class="metric-value-label">Current</div>
-                            <div class="metric-value">{{this.current}}</div>
-                        </div>
-                        <div class="metric-value-item">
-                            <div class="metric-value-label">Target</div>
-                            <div class="metric-value target-value">{{this.target}}</div>
-                        </div>
-                    </div>
-                </div>
-                {{/each}}
-            </div>
+            <table class="table no-break">
+                <thead>
+                    <tr>
+                        <th class="metric-name-cell">Metric</th>
+                        <th class="metric-value-cell">Target</th>
+                        <th class="metric-value-cell">Current</th>
+                        <th class="metric-definition-cell">Definition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each generated_sections.success_metrics.metrics}}
+                    <tr>
+                        <td>{{this.name}}</td>
+                        <td>{{this.target}}</td>
+                        <td>{{this.current}}</td>
+                        <td>{{{this.definition}}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </div>
         {{/if}}
 
         {{#if generated_sections.project_timeline.phases}}
         <!-- Project Timeline -->
-        <div class="section">
+        <div class="section timeline-section page-break">
             <h2 class="section-title">Project Timeline & Roadmap</h2>
-            <div class="timeline">
-                {{#each generated_sections.project_timeline.phases}}
-                <div class="timeline-item no-break">
-                    <div class="timeline-content no-break">
-                        <div class="timeline-period">{{formatTimelinePeriod this.time_period}}</div>
-                        <div class="timeline-activity">{{this.activity}}</div>
-                        <div class="timeline-pic">Responsible: {{this.pic}}</div>
-                    </div>
-                </div>
-                {{/each}}
-            </div>
+            <table class="table no-break">
+                <thead>
+                    <tr>
+                        <th>Person In Charge</th>
+                        <th>Activity</th>
+                        <th>Time Period</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each generated_sections.project_timeline.phases}}
+                    <tr>
+                        <td>{{this.pic}}</td>
+                        <td>{{this.activity}}</td>
+                        <td>{{formatTimelinePeriod this.time_period}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </div>
         {{/if}}
 
-
         {{#if generated_sections.custom_sections.sections}}
-        <!-- Custom Sections -->
-        {{#each generated_sections.custom_sections.sections}}
-        <div class="section">
-             <h2 class="section-title">{{this.title}}</h2>
-             <div class="custom-section-content no-break">
+        <!-- Custom Sections - Always start on new page -->
+        <div class="section page-break">
+            <h2 class="section-title">Additional Sections</h2>
+            {{#each generated_sections.custom_sections.sections}}
+            <div class="custom-section no-break">
                 {{#if (eq this.layout 'text')}}
+                    <div class="subsection-title">{{this.title}}</div>
                     <div class="content">{{{this.content}}}</div>
                 {{else if (eq this.layout 'table')}}
-                    <table class="table no-break">
-                        {{#if this.content}}
-                            {{#with this.content.[0] as |headerRow|}}
-                                {{#if headerRow}}
-                                    <thead>
-                                        <tr>
-                                            {{#each headerRow}}
-                                                <th>{{{this}}}</th>
-                                            {{/each}}
-                                        </tr>
-                                    </thead>
-                                {{/if}}
-                            {{/with}}
+                    <div class="subsection-title">{{this.title}}</div>
+                    {{#if this.content}}
+                        <table class="table no-break">
+                            {{#if this.content.headers}}
+                                <thead>
+                                    <tr>
+                                        {{#each this.content.headers}}
+                                            <th>{{{this}}}</th>
+                                        {{/each}}
+                                    </tr>
+                                </thead>
+                            {{/if}}
                             <tbody>
-                                {{#each this.content}}
-                                    {{#unless @first}}
-                                        <tr>
-                                            {{#each this}}
-                                                <td>{{{this}}}</td>
-                                            {{/each}}
-                                        </tr>
-                                    {{/unless}}
+                                {{#each this.content.rows as |rowData rowIndex|}}
+                                    <tr>
+                                        {{#each rowData as |cellData cellIndex|}}
+                                            <td>{{{cellData}}}</td>
+                                        {{/each}}
+                                    </tr>
                                 {{/each}}
                             </tbody>
-                        {{/if}}
-                    </table>
+                        </table>
+                    {{/if}}
                 {{else}}
                     <div class="content">Custom section layout not supported: {{this.layout}}</div>
                 {{/if}}
-             </div>
+            </div>
+            {{/each}}
         </div>
-        {{/each}}
         {{/if}}
 
         <!-- Footer -->
