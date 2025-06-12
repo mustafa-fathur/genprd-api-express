@@ -15,11 +15,30 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
-    google_id: DataTypes.STRING,
-    email: DataTypes.STRING,
-    name: DataTypes.STRING,
-    avatar_url: DataTypes.STRING,
-    password: DataTypes.STRING,
+    google_id: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true
+      }
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    avatar_url: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   }, {
     sequelize,
     modelName: 'User',

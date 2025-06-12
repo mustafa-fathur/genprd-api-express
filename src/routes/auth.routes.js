@@ -3,6 +3,12 @@ const router = express.Router();
 const authController = require('../controllers/auth.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 
+// Conventional Authentication Routes
+router.post('/register', authController.register);
+router.post('/login', authController.login);
+router.post('/forgot-password', authController.requestPasswordReset);
+router.post('/reset-password', authController.resetPassword);
+
 // Web Authentication Routes
 router.get('/web/google', authController.webGoogleLogin);
 router.get('/web/google/callback', authController.webGoogleCallback);

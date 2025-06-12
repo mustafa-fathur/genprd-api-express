@@ -12,7 +12,7 @@ module.exports = {
       },
       google_id: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       email: {
         type: Sequelize.STRING,
@@ -29,6 +29,7 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       created_at: {
         allowNull: false,
