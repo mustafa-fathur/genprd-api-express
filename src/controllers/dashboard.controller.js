@@ -19,6 +19,7 @@ const dashboardData = async (req, res) => {
       totalInProgress,
       totalFinished,
       totalArchived,
+      totalPinned,
       recentPRDs
     ] = await Promise.all([
       // Total PRDs
@@ -63,6 +64,14 @@ const dashboardData = async (req, res) => {
         } 
       }),
       
+      // Total Pinned PRDs
+      PRD.count({ 
+        where: { 
+          user_id: userId,
+          is_pinned: true
+        } 
+      }),
+      
       // 3 Latest PRDs (either created or updated)
       PRD.findAll({
         where: { user_id: userId },
@@ -88,7 +97,8 @@ const dashboardData = async (req, res) => {
           totalDraft,
           totalInProgress,
           totalFinished,
-          totalArchived
+          totalArchived,
+          totalPinned
         },
         recentPRDs
       }
