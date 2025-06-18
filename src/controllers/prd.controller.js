@@ -1,6 +1,7 @@
 const { PRD, User } = require('../models');
 const axios = require('axios');
 const { generatePRDPDF } = require('../utils/pdf-generator');
+const admin = require('../utils/firebase');
 const { Op } = require('sequelize');
 
 // Get all PRDs with improved filtering and pagination
@@ -301,6 +302,34 @@ const createPRD = async (req, res) => {
     try {
       const newPRD = await PRD.create(prdData);
       console.log('PRD created successfully with ID:', newPRD.id);
+
+      const user = await User.findByPk(userId);
+
+      if (user?.fcm_token) {
+        const message = {
+          token: user.fcm_token,
+          notification: {
+            title: 'PRD Generated',
+            body: `Your PRD "${product_name}" has been successfully generated.`,
+          },
+          android: {
+            priority: "high",
+            notification: {
+              channelId: "default_channel", // harus match dengan yang di Flutter
+            }
+          },
+          data: {
+            click_action: 'FLUTTER_NOTIFICATION_CLICK',
+          }
+        };
+
+        try {
+          const response = await admin.messaging().send(message);
+          console.log("✅ FCM notification sent:", response);
+        } catch (error) {
+          console.error("❌ FCM error:", error);
+        }
+      }
       
       return res.status(201).json({
         status: 'success',

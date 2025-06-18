@@ -84,7 +84,30 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const updateFCMToken = async (req, res) => {
+  try {
+    console.log('Received FCM token update request:', req.body, 'User:', req.user);
+    const userId = req.user.id;
+    const { fcm_token } = req.body;
+
+    await User.update({ fcm_token }, { where: { id: userId } });
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'FCM token updated successfully'
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to update FCM token',
+      error: err.message
+    });
+  }
+};
+
+
 module.exports = {
   getProfile,
-  updateProfile
+  updateProfile,
+  updateFCMToken
 };
