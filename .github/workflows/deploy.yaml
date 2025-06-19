@@ -47,4 +47,22 @@ jobs:
             --memory=2Gi \
             --cpu=1 \
             --max-instances=10 \
-            --set-env-vars="NODE_ENV=${{ secrets.NODE_ENV }},DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }},DB_NAME=${{ secrets.DB_NAME }},DB_HOST=${{ secrets.DB_HOST }},DB_CONNECTION=${{ secrets.DB_CONNECTION }},JWT_SECRET=${{ secrets.JWT_SECRET }},JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }},REFRESH_SECRET=${{ secrets.REFRESH_SECRET }},REFRESH_EXPIRATION=${{ secrets.REFRESH_EXPIRATION }},GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},GCP_BUCKET_NAME=${{ secrets.GCP_BUCKET_NAME }},GCP_FOLDER_NAME=${{ secrets.GCP_FOLDER_NAME }},BASE_URL=${{ secrets.BASE_URL }},FLASK_URL=${{ secrets.FLASK_URL }},FRONTEND_URL=${{ secrets.FRONTEND_URL }},FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" \
+            --set-env-vars="NODE_ENV=${{ secrets.NODE_ENV }}" \
+            --set-env-vars="DB_USERNAME=${{ secrets.DB_USERNAME }}" \
+            --set-env-vars="DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
+            --set-env-vars="DB_NAME=${{ secrets.DB_NAME }}" \
+            --set-env-vars="DB_HOST=${{ secrets.DB_HOST }}" \
+            --set-env-vars="DB_CONNECTION=${{ secrets.DB_CONNECTION }}" \
+            --set-env-vars="JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+            --set-env-vars="JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}" \
+            --set-env-vars="REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}" \
+            --set-env-vars="REFRESH_EXPIRATION=${{ secrets.REFRESH_EXPIRATION }}" \
+            --set-env-vars="GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+            --set-env-vars="GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            --set-env-vars="GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
+            --set-env-vars="GCP_BUCKET_NAME=${{ secrets.GCP_BUCKET_NAME }}" \
+            --set-env-vars="GCP_FOLDER_NAME=${{ secrets.GCP_FOLDER_NAME }}" \
+            --set-env-vars="BASE_URL=${{ secrets.BASE_URL }}" \
+            --set-env-vars="FLASK_URL=${{ secrets.FLASK_URL }}" \
+            --set-env-vars="FRONTEND_URL=${{ secrets.FRONTEND_URL }}" \
+            --set-env-vars="FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" \
