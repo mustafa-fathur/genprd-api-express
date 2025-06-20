@@ -73,4 +73,3 @@ jobs:
             --set-env-vars=FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
             --set-env-vars=FIREBASE_SECRET_KEYFILE=./src/config/serviceAccountKey.json \
             --set-env-vars=GCP_STORAGE_KEYFILE=./src/config/genprd-storage-bucket-service-key.json \
-            --set-env-vars=PORT=${{ secrets.PORT }}
