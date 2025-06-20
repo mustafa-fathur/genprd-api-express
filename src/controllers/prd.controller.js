@@ -315,7 +315,7 @@ const createPRD = async (req, res) => {
           android: {
             priority: "high",
             notification: {
-              channelId: "default_channel", // harus match dengan yang di Flutter
+              channelId: "default_channel",
             }
           },
           data: {
