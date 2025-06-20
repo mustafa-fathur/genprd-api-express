@@ -66,5 +66,5 @@ jobs:
             --set-env-vars=BASE_URL=${{ secrets.BASE_URL }} \
             --set-env-vars=FLASK_URL=${{ secrets.FLASK_URL }} \
             --set-env-vars=FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
-            --set-env-vars=FIREBASE_API_KEY="${{ secrets.FIREBASE_API_KEY }}" \
+            --set-env-vars=FIREBASE_SECRET_KEYFILE="${{ secrets.FIREBASE_SECRET_KEYFILE }}" \
             --set-env-vars=PORT=${{ secrets.PORT }} \
