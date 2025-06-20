@@ -29,6 +29,12 @@ jobs:
       - name: Authenticate Docker with Artifact Registry
         run: gcloud auth configure-docker asia-southeast2-docker.pkg.dev
 
+      - name: Write service account files from secrets
+        run: |
+          mkdir -p ./src/config
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > ./src/config/serviceAccountKey.json
+          echo '${{ secrets.GCP_STORAGE_SERVICE_ACCOUNT }}' > ./src/config/genprd-storage-bucket-service-key.json
+
       - name: Build and Push Docker Image
         run: |
           IMAGE_NAME="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/genprd-images/express-backend"
@@ -39,7 +45,6 @@ jobs:
         env:
           IMAGE_NAME: "asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/genprd-images/express-backend"
         run: |
-          # Use direct environment variable approach instead of YAML file
           gcloud run deploy express-backend \
             --image=$IMAGE_NAME \
             --region=${{ secrets.GCP_REGION }} \
@@ -66,5 +71,6 @@ jobs:
             --set-env-vars=BASE_URL=${{ secrets.BASE_URL }} \
             --set-env-vars=FLASK_URL=${{ secrets.FLASK_URL }} \
             --set-env-vars=FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
-            --set-env-vars=FIREBASE_SECRET_KEYFILE="${{ secrets.FIREBASE_SECRET_KEYFILE }}" \
-            --set-env-vars=PORT=${{ secrets.PORT }} \
+            --set-env-vars=FIREBASE_SECRET_KEYFILE=./src/config/serviceAccountKey.json \
+            --set-env-vars=GCP_STORAGE_KEYFILE=./src/config/genprd-storage-bucket-service-key.json \
+            --set-env-vars=PORT=${{ secrets.PORT }}
