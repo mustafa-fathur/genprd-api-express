@@ -39,6 +39,31 @@ jobs:
         env:
           IMAGE_NAME: "asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/genprd-images/express-backend"
         run: |
+          # Create environment variables file
+          cat > env.yaml << EOF
+          NODE_ENV: "${{ secrets.NODE_ENV }}"
+          DB_USERNAME: "${{ secrets.DB_USERNAME }}"
+          DB_PASSWORD: "${{ secrets.DB_PASSWORD }}"
+          DB_NAME: "${{ secrets.DB_NAME }}"
+          DB_HOST: "${{ secrets.DB_HOST }}"
+          DB_CONNECTION: "${{ secrets.DB_CONNECTION }}"
+          JWT_SECRET: "${{ secrets.JWT_SECRET }}"
+          JWT_EXPIRATION: "${{ secrets.JWT_EXPIRATION }}"
+          REFRESH_SECRET: "${{ secrets.REFRESH_SECRET }}"
+          REFRESH_EXPIRATION: "${{ secrets.REFRESH_EXPIRATION }}"
+          GOOGLE_CLIENT_ID: "${{ secrets.GOOGLE_CLIENT_ID }}"
+          GOOGLE_CLIENT_SECRET: "${{ secrets.GOOGLE_CLIENT_SECRET }}"
+          GCP_PROJECT_ID: "${{ secrets.GCP_PROJECT_ID }}"
+          GCP_BUCKET_NAME: "${{ secrets.GCP_BUCKET_NAME }}"
+          GCP_FOLDER_NAME: "${{ secrets.GCP_FOLDER_NAME }}"
+          BASE_URL: "${{ secrets.BASE_URL }}"
+          FLASK_URL: "${{ secrets.FLASK_URL }}"
+          FRONTEND_URL: "${{ secrets.FRONTEND_URL }}"
+          FIREBASE_API_KEY: "${{ secrets.FIREBASE_API_KEY }}"
+          PORT: "8080"
+          EOF
+          
+          # Deploy using the env file
           gcloud run deploy express-backend \
             --image=$IMAGE_NAME \
             --region=${{ secrets.GCP_REGION }} \
@@ -47,4 +72,4 @@ jobs:
             --memory=2Gi \
             --cpu=1 \
             --max-instances=10 \
-            --set-env-vars="NODE_ENV=${{ secrets.NODE_ENV }},DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }},DB_NAME=${{ secrets.DB_NAME }},DB_HOST=${{ secrets.DB_HOST }},DB_CONNECTION=${{ secrets.DB_CONNECTION }},JWT_SECRET=${{ secrets.JWT_SECRET }},JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }},REFRESH_SECRET=${{ secrets.REFRESH_SECRET }},REFRESH_EXPIRATION=${{ secrets.REFRESH_EXPIRATION }},GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},GCP_BUCKET_NAME=${{ secrets.GCP_BUCKET_NAME }},GCP_FOLDER_NAME=${{ secrets.GCP_FOLDER_NAME }},BASE_URL=${{ secrets.BASE_URL }},FLASK_URL=${{ secrets.FLASK_URL }},FRONTEND_URL=${{ secrets.FRONTEND_URL }},FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}"
+            --env-vars-file=env.yaml
