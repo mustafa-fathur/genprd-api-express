@@ -40,7 +40,7 @@ const getAllPRDs = async (req, res) => {
       order: [[sort, order]],
       attributes: [
         'id', 'product_name', 'document_stage', 'document_version', 
-        'project_overview', 'start_date', 'end_date', 'is_pinned', 
+        'project_overview', 'start_date', 'end_date', 'deadline', 'is_pinned', 
         'created_at', 'updated_at', 'last_viewed_at'
       ]
     };
@@ -93,7 +93,7 @@ const getRecentPRDs = async (req, res) => {
       ],
       limit: limit,
       attributes: [
-        'id', 'product_name', 'document_stage', 
+        'id', 'product_name', 'document_stage', 'deadline',
         'updated_at', 'is_pinned', 'last_viewed_at'
       ]
     });
@@ -163,6 +163,7 @@ const createPRD = async (req, res) => {
       project_overview,
       start_date,
       end_date,
+      deadline,
       document_owners,
       developers,
       stakeholders,
@@ -174,6 +175,7 @@ const createPRD = async (req, res) => {
     console.log('Request body parsed successfully');
     console.log('Document owners received:', document_owners);
     console.log('Developers received:', developers);
+    console.log('Deadline received:', deadline);
     
     // Validate required fields
     if (!product_name || !project_overview || !start_date || !end_date) {
@@ -207,7 +209,8 @@ const createPRD = async (req, res) => {
             informed: []
           },
           start_date,
-          end_date
+          end_date,
+          deadline
         };
 
         console.log('Calling Flask API with payload structure:', Object.keys(flaskPayload));
@@ -287,6 +290,7 @@ const createPRD = async (req, res) => {
       project_overview: project_overview,
       start_date: start_date,
       end_date: end_date,
+      deadline: deadline || null,
       document_owners: document_owners || [],
       developers: developers || [],
       stakeholders: stakeholders || [],
@@ -393,6 +397,7 @@ const updatePRD = async (req, res) => {
       project_overview,
       start_date,
       end_date,
+      deadline,
       document_owners,
       developers,
       stakeholders,
@@ -421,6 +426,7 @@ const updatePRD = async (req, res) => {
     if (project_overview !== undefined) updateData.project_overview = project_overview;
     if (start_date !== undefined) updateData.start_date = start_date;
     if (end_date !== undefined) updateData.end_date = end_date;
+    if (deadline !== undefined) updateData.deadline = deadline;
     if (document_owners !== undefined) updateData.document_owners = document_owners;
     if (developers !== undefined) updateData.developers = developers;
     if (stakeholders !== undefined) updateData.stakeholders = stakeholders;

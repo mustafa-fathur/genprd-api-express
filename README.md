@@ -620,20 +620,11 @@ Authorization: Bearer jwt-token-string
         "project_overview": "A comprehensive task management application...",
         "start_date": "2025-05-23",
         "end_date": "2025-12-31",
-        "document_owners": ["John Doe", "Jane Smith"],
-        "developers": ["Dev Team A", "Dev Team B"],
-        "stakeholders": ["Product Manager", "CEO"],
-        "darci_roles": {
-          "decider": ["CEO"],
-          "accountable": ["Product Manager"],
-          "responsible": ["Dev Team A"],
-          "consulted": ["UX Designer"],
-          "informed": ["Marketing Team"]
-        },
-        "generated_sections": {},
-        "timeline": [],
+        "deadline": "2025-11-15",
+        "is_pinned": false,
         "created_at": "2025-05-23T00:00:00.000Z",
-        "updated_at": "2025-05-23T00:00:00.000Z"
+        "updated_at": "2025-05-23T00:00:00.000Z",
+        "last_viewed_at": "2025-05-23T00:00:00.000Z"
       }
     ]
   }
@@ -672,9 +663,10 @@ Authorization: Bearer jwt-token-string
       "id": "prd-id-1",
       "product_name": "TaskMaster Pro",
       "document_stage": "draft",
-      "document_version": "1.0",
-      "created_at": "2025-05-23T00:00:00.000Z",
-      "updated_at": "2025-05-23T00:00:00.000Z"
+      "deadline": "2025-11-15",
+      "updated_at": "2025-05-23T00:00:00.000Z",
+      "is_pinned": false,
+      "last_viewed_at": "2025-05-23T00:00:00.000Z"
     }
   ]
 }
@@ -712,6 +704,7 @@ Authorization: Bearer jwt-token-string
     "project_overview": "A comprehensive task management application...",
     "start_date": "2025-05-23",
     "end_date": "2025-12-31",
+    "deadline": "2025-11-15",
     "document_owners": ["John Doe"],
     "developers": ["Dev Team A"],
     "stakeholders": ["Product Manager"],
@@ -749,6 +742,8 @@ Authorization: Bearer jwt-token-string
         "pic": "Product Manager"
       }
     ],
+    "is_pinned": false,
+    "last_viewed_at": "2025-05-23T00:00:00.000Z",
     "created_at": "2025-05-23T00:00:00.000Z",
     "updated_at": "2025-05-23T00:00:00.000Z"
   }
@@ -782,8 +777,9 @@ Authorization: Bearer jwt-token-string
   "project_overview": "A comprehensive task management application for teams...",
   "start_date": "2025-05-23",
   "end_date": "2025-12-31",
-  "document_owner": ["John Doe"],
-  "developer": ["Dev Team A", "Dev Team B"],
+  "deadline": "2025-11-15",
+  "document_owners": ["John Doe"],
+  "developers": ["Dev Team A", "Dev Team B"],
   "stakeholders": ["Product Manager", "CEO"],
   "darci_roles": {
     "decider": ["CEO"],
@@ -812,6 +808,7 @@ Authorization: Bearer jwt-token-string
     "project_overview": "A comprehensive task management application...",
     "start_date": "2025-05-23",
     "end_date": "2025-12-31",
+    "deadline": "2025-11-15",
     "document_owners": ["John Doe"],
     "developers": ["Dev Team A", "Dev Team B"],
     "stakeholders": ["Product Manager", "CEO"],
@@ -846,6 +843,8 @@ Authorization: Bearer jwt-token-string
         "pic": "Product Manager"
       }
     ],
+    "is_pinned": false,
+    "last_viewed_at": "2025-05-23T00:00:00.000Z",
     "created_at": "2025-05-23T00:00:00.000Z",
     "updated_at": "2025-05-23T00:00:00.000Z"
   }
@@ -883,6 +882,7 @@ Authorization: Bearer jwt-token-string
   "project_overview": "Updated project overview...",
   "start_date": "2025-06-01",
   "end_date": "2025-12-31",
+  "deadline": "2025-10-30",
   "document_owners": ["John Doe", "Jane Smith"],
   "developers": ["Dev Team A"],
   "stakeholders": ["Product Manager"],
@@ -909,7 +909,8 @@ Authorization: Bearer jwt-token-string
       "activity": "Updated Requirements Gathering",
       "pic": "Product Manager"
     }
-  ]
+  ],
+  "is_pinned": true
 }
 ```
 
@@ -966,7 +967,7 @@ Authorization: Bearer jwt-token-string
 
 ##### PATCH /api/prd/:id/archive
 
-Archives a PRD (changes document_stage to 'archived').
+Archives a PRD (changes document_stage to 'archived') or unarchives if already archived.
 
 **Authentication Required:** Yes (JWT Token)
 
@@ -978,7 +979,7 @@ Authorization: Bearer jwt-token-string
 
 **URL Parameters:**
 
-- `id` - The ID of the PRD to archive
+- `id` - The ID of the PRD to archive/unarchive
 
 **Response:**
 
@@ -988,8 +989,7 @@ Authorization: Bearer jwt-token-string
   "message": "PRD archived successfully",
   "data": {
     "id": "prd-id",
-    "document_stage": "archived",
-    "updated_at": "2025-05-23T00:00:00.000Z"
+    "document_stage": "archived"
   }
 }
 ```
@@ -997,7 +997,6 @@ Authorization: Bearer jwt-token-string
 **Error Responses:**
 
 - 404 Not Found - PRD with specified ID does not exist
-- 400 Bad Request - PRD is already archived
 
 ### Toggle Pin PRD
 
@@ -1025,8 +1024,7 @@ Authorization: Bearer jwt-token-string
   "message": "PRD pinned successfully",
   "data": {
     "id": "prd-id",
-    "is_pinned": true,
-    "updated_at": "2025-05-23T00:00:00.000Z"
+    "is_pinned": true
   }
 }
 ```
@@ -1057,7 +1055,7 @@ Authorization: Bearer jwt-token-string
 
 ```json
 {
-  "stage": "inprogress"
+  "document_stage": "inprogress"
 }
 ```
 
@@ -1066,11 +1064,10 @@ Authorization: Bearer jwt-token-string
 ```json
 {
   "status": "success",
-  "message": "PRD stage updated successfully",
+  "message": "PRD stage updated to inprogress",
   "data": {
     "id": "prd-id",
-    "document_stage": "inprogress",
-    "updated_at": "2025-05-23T00:00:00.000Z"
+    "document_stage": "inprogress"
   }
 }
 ```
@@ -1078,13 +1075,13 @@ Authorization: Bearer jwt-token-string
 **Error Responses:**
 
 - 404 Not Found - PRD with specified ID does not exist
-- 400 Bad Request - Invalid stage value
+- 400 Bad Request - Invalid document stage value
 
 ### Download PRD as PDF
 
 ##### GET /api/prd/:id/download
 
-Generates and downloads a PDF version of the PRD. Updates document_stage to 'finished'.
+Generates and downloads a PDF version of the PRD. Can optionally update document_stage to 'finished'.
 
 **Authentication Required:** Yes (JWT Token)
 
@@ -1098,6 +1095,10 @@ Authorization: Bearer jwt-token-string
 
 - `id` - The ID of the PRD to download
 
+**Query Parameters:**
+
+- `update_stage` - Boolean (default: true) - Whether to update document_stage to 'finished'
+
 **Response:**
 
 ```json
@@ -1110,6 +1111,7 @@ Authorization: Bearer jwt-token-string
     "file_name": "PRD_TaskMaster_Pro_123_timestamp.pdf",
     "gcs_path": "prd-pdf-documents/PRD_TaskMaster_Pro_123_timestamp.pdf",
     "prd_id": "prd-id",
+    "document_stage": "finished",
     "generated_at": "2025-05-23T00:00:00.000Z",
     "expires_at": "2025-05-24T00:00:00.000Z"
   }
@@ -1121,13 +1123,43 @@ Authorization: Bearer jwt-token-string
 - 404 Not Found - PRD with specified ID does not exist
 - 500 Internal Server Error - PDF generation failed
 
+## PRD Fields Explanation
+
+### Core Fields
+- **product_name**: Name of the product/project
+- **document_version**: Version of the PRD document
+- **document_stage**: Current stage (draft, inprogress, finished, archived)
+- **project_overview**: Description of the project
+
+### Timeline Fields
+- **start_date**: Project start date (DATEONLY format: YYYY-MM-DD)
+- **end_date**: Project end date (DATEONLY format: YYYY-MM-DD)
+- **deadline**: Business deadline (DATEONLY format: YYYY-MM-DD, optional, independent of project timeline)
+
+### People Fields
+- **document_owners**: Array of document owner names
+- **developers**: Array of developer names
+- **stakeholders**: Array of stakeholder names
+- **darci_roles**: DARCI matrix with role assignments
+
+### Meta Fields
+- **is_pinned**: Boolean indicating if PRD is pinned
+- **last_viewed_at**: Timestamp of last view
+- **generated_sections**: AI-generated content sections
+- **timeline**: Project timeline phases
+
+**Important Notes:**
+- The `deadline` field is independent of `start_date` and `end_date`
+- `deadline` represents business deadline, while `start_date`/`end_date` represent project execution timeline
+- `deadline` can be null, before, during, or after the project timeline
+
 ## Document Stages
 
 PRDs have the following stages:
 
 - **draft** - Initial creation state
-- **inprogress** - Currently being edited
-- **finished** - Downloaded as PDF
+- **inprogress** - Currently being edited (auto-set on first edit)
+- **finished** - Downloaded as PDF (auto-set on download)
 - **archived** - Archived for long-term storage
 
 ## Error Handling
@@ -1191,6 +1223,7 @@ All endpoints may return the following error responses:
 - **Flask API**: Used for AI-powered PRD content generation
 - **Google Cloud Storage**: Used for PDF file storage and public access
 - **Google OAuth**: Used for user authentication
+- **Firebase Cloud Messaging**: Used for push notifications
 
 ## Environment Variables
 

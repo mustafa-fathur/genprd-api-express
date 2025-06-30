@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     project_overview: DataTypes.TEXT,
     start_date: DataTypes.DATEONLY,
     end_date: DataTypes.DATEONLY,
+    deadline: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
+    },
     document_owners: DataTypes.JSON,
     developers: DataTypes.JSON,
     stakeholders: DataTypes.JSON,
